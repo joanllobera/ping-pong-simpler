@@ -17,6 +17,7 @@ and most of the physics and inverse kinematics is done on a central server, inst
 ## Compilation
 
 The simplest way to get started is to open the project and:
+0. Open the project and import the SteamVR plugin (we tested up to version 1.2.10)
 1. Open the scene `ServerScene.unity` in folder `Assets\Scenes`
 2. Build the project only with this scene. It can be a build for Linux (where you can use headless mode), or for windows.
 3. In the main folder of the server build, add the file `ServerConfig.cfg` found in the folder `ping-pong-simpler\Server`, change the port if necessary
@@ -33,8 +34,8 @@ as their final degree projects.
 
 Alex Via's project developed a server/client architecture to manage the physics, the inverse kinematics and the communication between the two participants
 Enric Moreu's project included a custom hardware component, where he developed a custom controller in the form of a ping pong paddle.
-Both projects can be found in the documentation folder. The original repository containing both can be found [here](https://github.com/joanllobera/ping-pong): 
-
+The outcome of this work was in a repository that was significantly bigger, it can be found [here](https://github.com/joanllobera/ping-pong/tree/9cc332536c2dd94f4f0cca1db427304f96764126): 
+9cc332536c2dd94f4f0cca1db427304f96764126
 
 
 The following images link to two videos of the original projects:
