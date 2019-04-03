@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class Constants
 {
-    public static string IP = "127.0.0.1";
+    public static string IP = "10.40.0.67";
     public static int PORT = 33333;
 
     public static int BUFF_SIZE = 8192;
