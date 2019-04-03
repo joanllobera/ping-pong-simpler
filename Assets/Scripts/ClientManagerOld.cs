@@ -11,7 +11,6 @@ using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
-using Valve.VR;
 
 using AvatarSystem;
 
@@ -48,9 +47,7 @@ public class ClientManagerOld : MonoBehaviour
     private Text recvTextField;
     private Text onlineTxt;
 
-    public SteamVR_Input_Sources hand;
-    public SteamVR_Action_Boolean triggerPress;
-    public SteamVR_Action_Pose handPose;
+    private SteamVR_TrackedController inputController;
 
     private void Awake()
     {
@@ -111,15 +108,15 @@ public class ClientManagerOld : MonoBehaviour
     public int deviceIndex = 3;
     private void FixedUpdate()
     {
-        
-        if (handPose.GetPoseIsValid(hand))
+        var device = SteamVR_Controller.Input(deviceIndex);
+        if (device != null && UnityEngine.XR.XRSettings.enabled)
         {
             try
             {
                 Transform origin = GameObject.Find(Constants.RightHand).transform.Find("attach");
-                Vector3 velocity = origin.TransformVector(handPose.GetVelocity(hand));
+                Vector3 velocity = origin.TransformVector(device.velocity);
                 Debug.DrawLine(origin.position, origin.position + velocity, Color.black);
-                Debug.DrawLine(origin.position, origin.position + handPose.GetVelocity(hand), Color.red);
+                Debug.DrawLine(origin.position, origin.position + device.velocity, Color.red);
             }
             catch
             {
@@ -138,12 +135,23 @@ public class ClientManagerOld : MonoBehaviour
         {
             Application.Quit();
         }
-        if (triggerPress.GetStateDown(hand))
+
+        if (inputController == null)
         {
-            Debug.Log("PressedTrigger");
-            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
-            packet.Send(socket, new AsyncCallback(SendCallback));
-        }
+            inputController = GameObject.FindObjectOfType<SteamVR_TrackedController>();
+            if(inputController != null)
+            {
+                inputController.TriggerClicked += OnTriggerClicked;
+            }
+        } 
+    }
+
+    private void OnTriggerClicked(object sender, ClickedEventArgs e)
+    {
+        //Debug.Log("Trigger Pressed");
+        // When the server interprets this packet, the ball is served to the client that made the request
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+        packet.Send(socket, new AsyncCallback(SendCallback));
     }
 
     private void ProcessOponents()
@@ -238,6 +246,12 @@ public class ClientManagerOld : MonoBehaviour
     private void OnApplicationQuit()
     {
         Disconnect();
+
+        // Make sure to deregister the events to avoid Memory Leaks!!
+        if(inputController != null)
+        {
+            inputController.TriggerClicked -= OnTriggerClicked;
+        }
     }
 
     #region Callbacks

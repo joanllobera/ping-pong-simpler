@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using Valve.VR;
 
 namespace AvatarSystem
 {
@@ -62,8 +61,8 @@ namespace AvatarSystem
         private bool initialized = false;
         private bool InitSelf()
         {
-            var rig = Object.FindObjectOfType<SteamVR_PlayArea>();
-            var cam = Object.FindObjectOfType<Camera>();
+            var rig = Object.FindObjectOfType<SteamVR_ControllerManager>();
+            var cam = Object.FindObjectOfType<SteamVR_Camera>();
             var sensors = Object.FindObjectsOfType<SteamVR_TrackedObject>();
 
             // If the sensors are not valid or not found, the initialization failed
@@ -97,15 +96,9 @@ namespace AvatarSystem
             foreach (var s in sensors)
             {
                 if (s.transform.Find("attach") != null)
-                {
                     transformsMap.Add(s.name, s.transform.Find("attach"));
-                    Debug.Log("Attach found");
-                }
                 else
-                {
                     transformsMap.Add(s.name, s.transform);
-                    Debug.Log("Attach not found");
-                }
             }
             
             // Move the rig to match the camera position with the eyes of the model
@@ -115,7 +108,6 @@ namespace AvatarSystem
 
             Debug.Log("All sensors found");
             return true;
-            //////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
         private bool InitOponent()
