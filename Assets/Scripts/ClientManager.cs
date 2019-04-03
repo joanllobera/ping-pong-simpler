@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Valve.VR;
 
 public class ClientManager : MonoBehaviour
 {
@@ -37,7 +38,8 @@ public class ClientManager : MonoBehaviour
     private Text recvTextField;
     private Text onlineTxt;
 
-    private SteamVR_TrackedController inputController;
+    public SteamVR_Input_Sources hand;
+    public SteamVR_Action_Boolean triggerPress;
 
     private void Start()
     {
@@ -207,22 +209,11 @@ public class ClientManager : MonoBehaviour
             }
         }
 
-        if (inputController == null)
+        if (triggerPress.GetStateDown(hand))
         {
-            inputController = GameObject.FindObjectOfType<SteamVR_TrackedController>();
-            if (inputController != null)
-            {
-                inputController.TriggerClicked += OnTriggerClicked;
-            }
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
         }
-    }
-
-    private void OnTriggerClicked(object sender, ClickedEventArgs e)
-    {
-        //Debug.Log("Trigger Pressed");
-        // When the server interprets this packet, the ball is served to the client that made the request
-        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
-        client.Send(packet.ToArray(), packet.Size);
     }
 
     private void ProcessOponents()

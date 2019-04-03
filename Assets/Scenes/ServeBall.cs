@@ -1,24 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 
-[RequireComponent(typeof(SteamVR_TrackedController))]
 public class ServeBall : MonoBehaviour
 {
-    private SteamVR_TrackedController inputController;
+    public SteamVR_Input_Sources hand;
+    public SteamVR_Action_Boolean triggerPress;
 
-    private void Start()
+    private void Update()
     {
-        inputController = GetComponent<SteamVR_TrackedController>();
-        inputController.TriggerClicked += OnTriggerClicked;
-    }
-
-    private void OnTriggerClicked(object sender, ClickedEventArgs e)
-    {
-        //Debug.Log("Trigger Pressed");
-        BallController ballController = GameObject.Find("Ball").GetComponent<BallController>();
-        ballController.paddle = transform.Find("attach").Find("Collider").gameObject;
-        ballController.serve = true;
+        if (triggerPress.GetStateDown(hand))
+        {
+            BallController ballController = GameObject.Find("Ball").GetComponent<BallController>();
+            ballController.paddle = transform.Find("attach").Find("Collider").gameObject;
+            ballController.serve = true;
+        }
     }
 
     private void FixedUpdate()
