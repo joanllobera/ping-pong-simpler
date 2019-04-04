@@ -27,21 +27,31 @@ public class BallPosition : MonoBehaviour {
         puntuationP1 = 0.0f;
         puntuationP2 = 0.0f;
 
+        firstBot = false;
+        secondBot = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
         ballPos = transform.position.z;
-        if (ballPos >= preBallPos)
+        if (ballPos >= preBallPos)              //Si la pelota va dirección a J1 --> J2
         {
-            lastPlayerTouchingBall = true;
+            if (!lastPlayerTouchingBall)        //Si hay un cambio de dirección, hay que reiniciar los datos       
+            {
+                DirectionBallChanged();
+                lastPlayerTouchingBall = true;
+            }
         }
-        else
+        else                                    //Si la pelota va dirección a J2 --> J1
         {
-            lastPlayerTouchingBall = false;
+            if (lastPlayerTouchingBall)         //Si cambia de dirección 
+            {
+                DirectionBallChanged();         //Se reinician los botes 
+                lastPlayerTouchingBall = false; 
+            }
         }
 
-        preBallPos = ballPos;
+        preBallPos = ballPos;                   //Actualización de la pelota para el proximo frame
 
     }
 
@@ -50,12 +60,23 @@ public class BallPosition : MonoBehaviour {
         if(col.gameObject.name == "Box1")
         {
             Debug.Log("Collision with field1");
-            if (lastPlayerTouchingBall)
+            if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
             {
-                puntuationP2 += 1.0f;
+                puntuationP2 += 1.0f;               //Tocar el propio campo = Punto para el adversario 
             }
-            else
+            else                                    //Si toca el campo 2 y el ultimo en tocar la pelota es J2 
             {
+
+                //Segundo bote 
+                if (secondBot)
+                {
+                    puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                }
+                else
+                {
+                    secondBot = true;               //Si la pelota vuelve a tocar el mismo campo, será segundo bote 
+                }
+
 
             }
             
@@ -66,12 +87,26 @@ public class BallPosition : MonoBehaviour {
             Debug.Log("Collision with field2");
             if (lastPlayerTouchingBall)
             {
-                puntuationP1 += 1.0f;
+                puntuationP1 += 1.0f;               //Tocar el propio campo = Punto para el adversario
             }
             else
             {
-
+                if (secondBot)
+                {
+                    puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                }
+                else
+                {
+                    secondBot = true;               //
+                }
             }
         }
+    }
+
+
+    private void DirectionBallChanged()
+    {
+        firstBot = false;
+        secondBot = false;
     }
 }
