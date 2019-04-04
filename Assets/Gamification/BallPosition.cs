@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class BallPosition : MonoBehaviour {
 
+    private BallController ballController;
 
     private float ballPos;
     private float preBallPos;
 
     public GameObject field1;
     public GameObject field2;
+    public GameObject floor;
 
     private bool firstBot;
     private bool secondBot; 
@@ -21,6 +23,8 @@ public class BallPosition : MonoBehaviour {
     public float sumPuntuationXPoint = 1.0f;
     // Use this for initialization
     void Start () {
+        ballController = GameObject.Find(Constants.Ball).GetComponent<BallController>();
+
         ballPos = transform.position.z;
         lastPlayerTouchingBall = true;
 
@@ -57,29 +61,33 @@ public class BallPosition : MonoBehaviour {
 
     private void OnCollisionEnter(Collision col)
     {
-        if(col.gameObject.name == "Box1")
+        if(col.gameObject.name == "Box1")           //Campo Player 1
         {
             Debug.Log("Collision with field1");
             if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
             {
                 puntuationP2 += 1.0f;               //Tocar el propio campo = Punto para el adversario 
+                ResetBall();
             }
             else                                    //Si toca el campo 2 y el ultimo en tocar la pelota es J2 
             {
 
                 //Segundo bote 
-                if (secondBot)
+                if (firstBot)
                 {
                     puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                    ResetBall();
+
                 }
                 else
                 {
-                    secondBot = true;               //Si la pelota vuelve a tocar el mismo campo, será segundo bote 
+                    firstBot = true;               //Si la pelota vuelve a tocar el mismo campo, será segundo bote 
                 }
 
 
             }
             
+
         }
 
         if (col.gameObject.name == "Box2")
@@ -88,19 +96,58 @@ public class BallPosition : MonoBehaviour {
             if (lastPlayerTouchingBall)
             {
                 puntuationP1 += 1.0f;               //Tocar el propio campo = Punto para el adversario
+                ResetBall();
             }
             else
             {
-                if (secondBot)
+                if (firstBot)
                 {
                     puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                    ResetBall();
                 }
                 else
                 {
-                    secondBot = true;               //
+                    firstBot = true;               //
                 }
             }
         }
+
+        if(col.gameObject.name == "LimitFloor")
+        {
+            Debug.Log("Floor Collision!!");
+            if (lastPlayerTouchingBall)             //El ultimo jugador en tocar la bola fue P1
+            {
+                if (firstBot)                       //Si la bola ya ha botado
+                {
+                    puntuationP1 += 1.0f;
+                    ResetBall();
+                }
+                else                                //Si la bola aún no ha botado 
+                {
+                    puntuationP2 += 1.0f;
+                    ResetBall();
+                }
+            }else                                   //El ultimo jugador en tocar la bola fue P2 
+            {
+                if (firstBot)                       //Si la bola ya ha botado
+                {
+                    puntuationP2 += 1.0f;
+                    ResetBall();
+                }
+                else                                //Si la bola aún no ha botado 
+                {
+                    puntuationP1 += 1.0f;
+                    ResetBall();
+                }
+
+            }
+        }
+    }
+
+    private void ResetBall()
+    {
+        DirectionBallChanged();
+        ballController.serve = true;
     }
 
 
