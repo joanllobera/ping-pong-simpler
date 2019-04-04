@@ -26,6 +26,21 @@ The simplest way to get started is to open the project and:
 6. In the main folder of the client build, add the file ClientConfig.cfg, as found in the folder `ping-pong-simpler\Client`. Make sure you change the IP to the one of the server. Change also the port if necessary
 7. Execute first the server, and then the client. If you are on a network managed by a University or a large institution, it is possible that the server and the client may need to be on different computers
 
+## Instructions to configure the HTC Vive Pro for the PC
+
+First of all you need to download Steam and login with your steam account.
+From the steam client you need to download SteamVR.
+When you have connected all the VIVE Hardware you need to the the Room Setup to configure the RoomScale.
+
+
+## Fingertracking
+
+In order to set up fingertracking with HTC Vive Pro, you might want to follow these steps to make it work:
+1- Due to a unity bug, if your unity version is between 2018.2.16 and 2018.3.4, you have to delete the file OPENCL.dll in the unity root folder.
+2- Enable Camera in SteamVR settings, which is set to disabled by default. To enable it back you need to click SteamVR properties -> Camera -> Enable Camera.
+
+
+
 ## Credits
 
 This project is a simplification of two original projects developed in Autumn 2017 and Winter 2018 by Enric Moreu and Alexandre Via 
