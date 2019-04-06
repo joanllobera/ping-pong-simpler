@@ -111,4 +111,8 @@ public class BallController : MonoBehaviour
         BulletTime.Instance.SwitchBulletTime = true;
         rb.velocity *= p_mod;
     }
+
+    private void OnDestroy() {
+        BulletTime.Instance.OnBulletTimeStarted -= TriggerBulletTime;
+    }
 }
