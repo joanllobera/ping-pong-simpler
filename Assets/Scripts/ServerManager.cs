@@ -142,6 +142,12 @@ class ServerManager : MonoBehaviour
                 else if (text == Constants.BulletTimeRequest) {
                     Debug.Log("Bullet Time");
                     BulletTime.Instance.TriggerBulletTime();
+
+                    //enviar un paquete bullet time notificando al cliente
+                    if (BulletTime.Instance.SwitchBulletTime) {
+                        Packet bulletPack = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                        server.Send(e.Client, bulletPack.ToArray(), bulletPack.Size);
+                    }
                 }
                 Debug.Log("[C(" + e.Client + ")->S]: " + text
                     + " (" + packet.Size + " of " + e.Len + " bytes)");

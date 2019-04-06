@@ -26,7 +26,10 @@ public class BulletTime : MonoBehaviour {
     }
 
     public void TriggerBulletTime() {
-        if(!_bulletTimeActivated) OnBulletTimeStarted?.Invoke(_percentage);
+        if (!_bulletTimeActivated) {
+            OnBulletTimeStarted?.Invoke(_percentage);
+        }
+            
     }
 
 }

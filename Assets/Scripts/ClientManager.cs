@@ -11,6 +11,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
+using UnityEngine.Rendering.PostProcessing;
 
 public class ClientManager : MonoBehaviour
 {
@@ -41,11 +42,13 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Input_Sources hand;
     public SteamVR_Action_Boolean triggerPress;
     public SteamVR_Action_Boolean gripPress;    //put as gripPinch
+    public PostProcessVolume ppVolume;
 
     private void Start()
     {
         // Fix the target framerate
         Application.targetFrameRate = 90;
+        ppVolume.weight = 0;
 
         // Cache text labels
         recvTextField = GameObject.Find("RecvTxt").GetComponent<Text>();
@@ -121,9 +124,16 @@ public class ClientManager : MonoBehaviour
         switch(packet.Type)
         {
             case Packet.PacketType.Text:
-                recvText = ((PacketText)packet).Data;
-                receivedNewText = true;
-                Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+
+                string text = ((PacketText)packet).Data;
+                if (text == Constants.BulletTimeRequest) {
+                    ppVolume.weight = 1;
+                } 
+                else {
+                    recvText = ((PacketText)packet).Data;
+                    receivedNewText = true;
+                    Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+                }
                 break;
 
             case Packet.PacketType.Spawn:
