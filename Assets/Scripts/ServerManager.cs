@@ -139,6 +139,10 @@ class ServerManager : MonoBehaviour
                     Debug.Log("Serving Ball");
                     ballController.serve = true;
                 }
+                else if (text == Constants.BulletTimeRequest) {
+                    Debug.Log("Bullet Time");
+                    BulletTime.Instance.TriggerBulletTime();
+                }
                 Debug.Log("[C(" + e.Client + ")->S]: " + text
                     + " (" + packet.Size + " of " + e.Len + " bytes)");
                 foreach (var c in connectionManager.Connections)

@@ -23,6 +23,7 @@ public static class Constants
     public static string RightFoot = "RF";
 
     public static string ServeRequest = "ServeRequest";
+    public static string BulletTimeRequest = "BulletTime";
     public static string WelcomeMsg = "Welcome";
 
     public static string OnlineText = "Online";

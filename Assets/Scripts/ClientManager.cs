@@ -40,6 +40,7 @@ public class ClientManager : MonoBehaviour
 
     public SteamVR_Input_Sources hand;
     public SteamVR_Action_Boolean triggerPress;
+    public SteamVR_Action_Boolean gripPress;    //put as gripPinch
 
     private void Start()
     {
@@ -212,6 +213,10 @@ public class ClientManager : MonoBehaviour
         if (triggerPress.GetStateDown(hand))
         {
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
+        }
+        else if (gripPress.GetStateDown(hand)) {
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
             client.Send(packet.ToArray(), packet.Size);
         }
     }

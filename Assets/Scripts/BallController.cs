@@ -21,6 +21,7 @@ public class BallController : MonoBehaviour
         //Debug.Log("Gravity: " + Physics.gravity);
         //Physics.gravity = new Vector3(0, -4f, 0);
         rb = GetComponent<Rigidbody>();
+        BulletTime.Instance.OnBulletTimeStarted += TriggerBulletTime;
     }
 
     public float forceMagnitude = 100; //800;
@@ -28,6 +29,7 @@ public class BallController : MonoBehaviour
     {
         if(paddle != null && serve)
         {
+            BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             transform.rotation = Quaternion.identity;
@@ -71,7 +73,7 @@ public class BallController : MonoBehaviour
         if(collision.gameObject.name == Constants.RightHand)
         {
             Debug.Log("Impulse " + collision.impulse);
-
+            BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
             Vector3 dir = collision.contacts[0].point - transform.position;
             dir = -dir.normalized;
 
@@ -103,5 +105,10 @@ public class BallController : MonoBehaviour
 
         //    Debug.Log(paddleSpeed.velocity.magnitude);
         //}
+    }
+
+    private void TriggerBulletTime(float p_mod) {
+        BulletTime.Instance.SwitchBulletTime = true;
+        rb.velocity *= p_mod;
     }
 }
