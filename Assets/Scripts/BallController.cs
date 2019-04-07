@@ -73,6 +73,11 @@ public class BallController : MonoBehaviour
         if(collision.gameObject.name == Constants.RightHand)
         {
             Debug.Log("Impulse " + collision.impulse);
+            //deactivate bullet time if activated
+            if (BulletTime.Instance.SwitchBulletTime) {
+
+            }
+
             BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
             Vector3 dir = collision.contacts[0].point - transform.position;
             dir = -dir.normalized;
