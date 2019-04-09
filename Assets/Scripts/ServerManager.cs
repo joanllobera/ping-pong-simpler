@@ -206,4 +206,11 @@ class ServerManager : MonoBehaviour
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
         }
     }
+
+    public void SendBulletStop() {
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeStopRequest);
+        foreach (var client in connectionManager.Connections) {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+    }
 }

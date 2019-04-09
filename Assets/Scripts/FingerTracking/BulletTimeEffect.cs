@@ -6,9 +6,15 @@ using UnityEngine.Rendering.PostProcessing;
 public class BulletTimeEffect : MonoBehaviour {
     public static BulletTimeEffect _instance;
     public PostProcessVolume ppVolume;
+    ColorGrading colorGradingLayer = null;
 
     private void Awake() {
         _instance = this;
+    }
+    private void Start() {
+        ppVolume.profile.TryGetSettings(out colorGradingLayer);
+        ppVolume.weight = 1;
+        colorGradingLayer.active = false;
     }
 
     public static BulletTimeEffect Instance {
@@ -18,13 +24,10 @@ public class BulletTimeEffect : MonoBehaviour {
     public bool Effect {
         
         get {
-            if (ppVolume.weight > 0.1) return true;
-            else return false;
+            return colorGradingLayer.active;
         }
         set {
-            if (value) ppVolume.weight = 1;
-            else ppVolume.weight = 0;
+            colorGradingLayer.active = value;
         }
     }
-
 }

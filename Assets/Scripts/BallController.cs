@@ -13,6 +13,7 @@ public class BallController : MonoBehaviour
     private Vector3 oldPos;
     public Vector3 velocity;
     public float magnitude;
+    public ServerManager serverManager;
 
     private void Start()
     {
@@ -75,7 +76,7 @@ public class BallController : MonoBehaviour
             Debug.Log("Impulse " + collision.impulse);
             //deactivate bullet time if activated
             if (BulletTime.Instance.SwitchBulletTime) {
-
+                serverManager.SendBulletStop();
             }
 
             BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
