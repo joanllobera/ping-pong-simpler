@@ -13,6 +13,7 @@ public class BallController : MonoBehaviour
     private Vector3 oldPos;
     public Vector3 velocity;
     public float magnitude;
+    [SerializeField]private ServerManager serverManager;
 
     private void Start()
     {
@@ -21,6 +22,8 @@ public class BallController : MonoBehaviour
         //Debug.Log("Gravity: " + Physics.gravity);
         //Physics.gravity = new Vector3(0, -4f, 0);
         rb = GetComponent<Rigidbody>();
+        PaddleUp.Instance.OnPaddleUpStarted += TriggerPaddleUp;
+        
     }
 
     public float forceMagnitude = 100; //800;
@@ -104,4 +107,17 @@ public class BallController : MonoBehaviour
         //    Debug.Log(paddleSpeed.velocity.magnitude);
         //}
     }
+
+    private void TriggerPaddleUp(float p_mod)
+    {
+        PaddleUp.Instance.SwitchPaddleUp = true;
+        paddle.transform.localScale *= p_mod;
+    }
+
+    private void OnDestroy()
+    {
+        PaddleUp.Instance.OnPaddleUpStarted -= TriggerPaddleUp;
+        serverManager.SendPaddleUpStop();
+    }
+
 }

@@ -32,6 +32,10 @@ public static class Constants
 
     public static string Ball = "Ball";
 
+    public static string PaddleUpRequest = "PaddleUp";
+    public static string PaddleUpStopRequest = "PaddleUpStop";
+    public static string PerfectShootRequest = "PerfectShoot";
+
     public static Vector3 RightHandScale = new Vector3(0.11692f, 0.11692f, 0.11692f);
     public static Vector3 ColliderCenter = new Vector3(0, -0.15f, 1);
     public static Vector3 ColliderSize = new Vector3(2, 0.5f, 3);

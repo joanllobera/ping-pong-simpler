@@ -120,9 +120,17 @@ public class ClientManager : MonoBehaviour
         switch(packet.Type)
         {
             case Packet.PacketType.Text:
-                recvText = ((PacketText)packet).Data;
-                receivedNewText = true;
-                Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+                string text = ((PacketText)packet).Data;
+                if (text == Constants.PaddleUpRequest)
+                {
+                    // Hacer que la pala sea mas grande en el Cliente.
+                }
+                else
+                {
+                    recvText = ((PacketText)packet).Data;
+                    receivedNewText = true;
+                    Debug.Log("[S->C]: " + text + " (" + packet.Size + " of " + e.Len + " bytes)");
+                }
                 break;
 
             case Packet.PacketType.Spawn:
@@ -212,6 +220,11 @@ public class ClientManager : MonoBehaviour
         if (triggerPress.GetStateDown(hand))
         {
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
+        }
+        if (Input.GetKeyDown(KeyCode.P)) // Send the PaddleUp Request
+        {
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpRequest);
             client.Send(packet.ToArray(), packet.Size);
         }
     }
@@ -316,4 +329,5 @@ public class ClientManager : MonoBehaviour
             client.Send(packet.ToArray(), packet.Size);
         }
     }
+
 }

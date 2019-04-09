@@ -139,6 +139,17 @@ class ServerManager : MonoBehaviour
                     Debug.Log("Serving Ball");
                     ballController.serve = true;
                 }
+                else if(text == Constants.PaddleUpRequest) //Paddle Up Request
+                {
+                    Debug.Log("Paddle Up Super Power");
+                    PaddleUp.Instance.TriggerPaddleUp();
+
+                    if (PaddleUp.Instance.SwitchPaddleUp)  //Send Packet to Client
+                    {
+                        Packet bulletPack = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpRequest);
+                        server.Send(e.Client, bulletPack.ToArray(), bulletPack.Size);
+                    }
+                }
                 Debug.Log("[C(" + e.Client + ")->S]: " + text
                     + " (" + packet.Size + " of " + e.Len + " bytes)");
                 foreach (var c in connectionManager.Connections)
@@ -191,6 +202,14 @@ class ServerManager : MonoBehaviour
         Packet packet = PacketBuilder.Build(Packet.PacketType.Text, text);
 
         // Send the packet to all the connected clients
+        foreach (var client in connectionManager.Connections)
+        {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+    }
+
+    public void SendPaddleUpStop() {
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpStopRequest);
         foreach (var client in connectionManager.Connections)
         {
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
