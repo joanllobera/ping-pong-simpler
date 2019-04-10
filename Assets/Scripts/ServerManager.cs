@@ -11,8 +11,6 @@ using UnityEngine.UI;
 
 class ServerManager : MonoBehaviour
 {
-    public GameObject Walls;
-
     public Net.Protocol protocol;
     private Server server = null;
 
@@ -22,8 +20,6 @@ class ServerManager : MonoBehaviour
     private List<Trans> spawnTrans = new List<Trans>();
 
     public List<Transform> objectsToSend = new List<Transform>();
-
-    public List<Transform> WallsTransforms = new List<Transform>();
 
     private BallController ballController;
 
@@ -65,9 +61,6 @@ class ServerManager : MonoBehaviour
         // Start the server
         server.OnRecv += OnMsgRecv;
         server.Start(Constants.PORT);
-
-        for (int i = 0; i < Walls.gameObject.transform.childCount; i++)
-            WallsTransforms.Add(Walls.gameObject.transform.GetChild(i));
     }
 
     private void OnApplicationQuit()
@@ -116,10 +109,6 @@ class ServerManager : MonoBehaviour
                 Packet packet = PacketBuilder.Build(Packet.PacketType.Objects, objects);
                 server.Send(client.endPoint, packet.ToArray(), packet.Size);
             }
-
-            //Send walls position
-            Packet packetWalls = PacketBuilder.Build(Packet.PacketType.Walls, WallsTransforms);
-            server.Send(client.endPoint, packetWalls.ToArray(), packetWalls.Size);
         }
     }
 

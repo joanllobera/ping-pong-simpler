@@ -24,8 +24,6 @@ public class Packet
         OtherClients,   // [S->C]
         Objects,        // [S->C]
 
-        Walls,          // [C->S]
-
         Benchmark,
     };
 
