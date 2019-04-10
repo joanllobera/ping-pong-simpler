@@ -20,6 +20,8 @@ public class BallPosition : MonoBehaviour {
     private float puntuationP1;
     private float puntuationP2;
     public float sumPuntuationXPoint = 1.0f;
+
+    private bool IsColliding;
     // Use this for initialization
     void Start () {
         ballController = GameObject.Find(Constants.Ball).GetComponent<BallController>();
@@ -61,91 +63,111 @@ public class BallPosition : MonoBehaviour {
     {
         if(col.gameObject.name == "Box1")           //Campo Player 1
         {
-            Debug.Log("Collision with field1");
-            if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
+            if (!IsColliding)
             {
-                puntuationP2 += 1.0f;               //Tocar el propio campo = Punto para el adversario 
-                ResetBall();
-            }
-            else                                    //Si toca el campo 2 y el ultimo en tocar la pelota es J2 
-            {
-
-                //Segundo bote 
-                if (firstBot)
+                Debug.Log("Collision with field1");
+                if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
                 {
-                    puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                    puntuationP2 += 1.0f;               //Tocar el propio campo = Punto para el adversario 
                     ResetBall();
-
                 }
-                else
+                else                                    //Si toca el campo 2 y el ultimo en tocar la pelota es J2 
                 {
-                    firstBot = true;               //Si la pelota vuelve a tocar el mismo campo, será segundo bote 
+
+                    //Segundo bote 
+                    if (firstBot)
+                    {
+                        puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                        ResetBall();
+
+                    }
+                    else
+                    {
+                        firstBot = true;               //Si la pelota vuelve a tocar el mismo campo, será segundo bote 
+                    }
+
+
                 }
-
-
+                IsColliding = true;
             }
             
 
         }
 
-        if (col.gameObject.name == "Box2")          //Campo Player 1
+        else if (col.gameObject.name == "Box2")          //Campo Player 1
         {
-            Debug.Log("Collision with field2");
-            if (lastPlayerTouchingBall)
+            if (!IsColliding)
             {
-                puntuationP1 += 1.0f;               //Tocar el propio campo = Punto para el adversario
-                ResetBall();
-            }
-            else
-            {
-                if (firstBot)
+                Debug.Log("Collision with field2");
+                if (lastPlayerTouchingBall)
                 {
-                    puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                    puntuationP1 += 1.0f;               //Tocar el propio campo = Punto para el adversario
                     ResetBall();
                 }
                 else
                 {
-                    firstBot = true;               //
+                    if (firstBot)
+                    {
+                        puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                        ResetBall();
+                    }
+                    else
+                    {
+                        firstBot = true;               //
+                    }
                 }
+                IsColliding = true;
             }
         }
 
-        if(col.gameObject.name == "LimitFloor")
+        else if(col.gameObject.name == "LimitFloor")
         {
-            Debug.Log("Floor Collision!!");
-            if (lastPlayerTouchingBall)             //El ultimo jugador en tocar la bola fue P1
+            if (!IsColliding)
             {
-                if (firstBot)                       //Si la bola ya ha botado
+                Debug.Log("Floor Collision!!");
+                if (lastPlayerTouchingBall)             //El ultimo jugador en tocar la bola fue P1
                 {
-                    puntuationP1 += 1.0f;
-                    ResetBall();
-                }
-                else                                //Si la bola aún no ha botado 
-                {
-                    puntuationP2 += 1.0f;
-                    ResetBall();
-                }
-            }else                                   //El ultimo jugador en tocar la bola fue P2 
-            {
-                if (firstBot)                       //Si la bola ya ha botado
-                {
-                    puntuationP2 += 1.0f;
-                    ResetBall();
-                }
-                else                                //Si la bola aún no ha botado 
-                {
-                    puntuationP1 += 1.0f;
-                    ResetBall();
-                }
 
+                    if (firstBot)                       //Si la bola ya ha botado
+                    {
+                        puntuationP1 += 1.0f;
+                        ResetBall();
+                    }
+                    else                                //Si la bola aún no ha botado 
+                    {
+                        puntuationP2 += 1.0f;
+                        ResetBall();
+                    }
+                }
+                else                                   //El ultimo jugador en tocar la bola fue P2 
+                {
+                    if (firstBot)                       //Si la bola ya ha botado
+                    {
+                        puntuationP2 += 1.0f;
+                        ResetBall();
+                    }
+                    else                                //Si la bola aún no ha botado 
+                    {
+                        puntuationP1 += 1.0f;
+                        ResetBall();
+                    }
+
+                }
+                IsColliding = true;
             }
         }
     }
 
-    private void ResetBall()
+    private void OnCollisionExit(Collision col)
+    {
+            IsColliding = false;  
+    }
+
+        private void ResetBall()
     {
         DirectionBallChanged();
         ballController.serve = true;
+        IsColliding = false;
     }
 
 
