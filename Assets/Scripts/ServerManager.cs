@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-class ServerManager : MonoBehaviour
+public class ServerManager : MonoBehaviour
 {
     public Net.Protocol protocol;
     private Server server = null;
@@ -211,6 +211,15 @@ class ServerManager : MonoBehaviour
         Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeStopRequest);
         foreach (var client in connectionManager.Connections) {
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+    }
+
+    public void SendCollisionPacket()
+    {
+        Packet pck = PacketBuilder.Build(Packet.PacketType.Text, Constants.Collision);
+        foreach (var client in connectionManager.Connections)
+        {
+            server.Send(client.endPoint, pck.ToArray(), pck.Size);
         }
     }
 }

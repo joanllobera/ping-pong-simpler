@@ -42,6 +42,8 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Action_Boolean triggerPress;
     public SteamVR_Action_Boolean gripPress;    //put as gripPinch
 
+    public AudioSource sndFX;
+
     private void Start()
     {
         // Fix the target framerate
@@ -77,6 +79,9 @@ public class ClientManager : MonoBehaviour
         client.OnRecv += OnMsgRecv;
         client.OnError += OnError;
         client.Start(ip, port);
+
+        //sndfx stuff
+        sndFX = GetComponent<AudioSource>();
     }
 
     private void OnApplicationQuit()
@@ -128,6 +133,11 @@ public class ClientManager : MonoBehaviour
                     BulletTimeEffect.Instance.Effect = true;
                 } else if (text == Constants.BulletTimeStopRequest) {
                     BulletTimeEffect.Instance.Effect = false;
+                }
+                else if (text == Constants.Collision)
+                {
+                    //PLAY SOUND
+                    sndFX.Play();
                 }
                 else {
                     recvText = ((PacketText)packet).Data;

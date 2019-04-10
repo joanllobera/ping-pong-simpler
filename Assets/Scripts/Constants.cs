@@ -27,6 +27,8 @@ public static class Constants
     public static string BulletTimeStopRequest = "BulletTimeStop";
     public static string WelcomeMsg = "Welcome";
 
+    public static string Collision = "Collision";
+
     public static string OnlineText = "Online";
     public static string OfflineText = "Offline";
 

@@ -88,6 +88,8 @@ public class BallController : MonoBehaviour
             rb.AddForce(dir * collisionForce);
             Debug.Log(dir * collisionForce);
             Debug.DrawLine(transform.position, collision.contacts[0].point * 100, Color.black, 10);
+
+            serverManager.SendCollisionPacket();
         }
 
         //if(collision.gameObject.name == Constants.RightHand && magnitude > 0.3f)
