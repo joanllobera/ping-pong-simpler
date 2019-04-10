@@ -4,7 +4,7 @@ using UnityEngine;
 using MLAgents;
 
 public class PingPongAgent : Agent {
-
+    
     /*
      TO DO LIST:
         - Add the necessary torque to the agent so that it gets to the target rotation
@@ -17,6 +17,8 @@ public class PingPongAgent : Agent {
     public Transform table;
     public Rigidbody ballRb;
 
+    public Transform lastTransform;
+    public bool isBottomSide;
     //invert Z axis
     bool invertZ;
     float invMult;
@@ -24,13 +26,15 @@ public class PingPongAgent : Agent {
     public float maxAxisForce;
 
     public float maxTorque;
-    Vector3 objectiveEulerAngles;
+    Quaternion objectiveEulerAngles;
 
     //observation of ball bounce 
     public bool hasBallBounced;
 
 	void Start () {
         rBody = GetComponent<Rigidbody>();
+        lastTransform = this.transform;
+        rBody.interpolation = RigidbodyInterpolation.Interpolate;
         invMult = invertZ ? -1.0f : 1.0f;
 	}
 
@@ -74,6 +78,30 @@ public class PingPongAgent : Agent {
         Vector3 move = new Vector3(maxAxisForce*vectorAction[0]*invMult, maxAxisForce * vectorAction[1], maxAxisForce * vectorAction[2] * invMult);
         rBody.AddForce(move);
 
-        objectiveEulerAngles = new Vector3(vectorAction[3], vectorAction[4], vectorAction[5]);
+        objectiveEulerAngles = Quaternion.Euler(vectorAction[3], vectorAction[4], vectorAction[5]);
+        rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, 180f * Time.deltaTime));
+    }
+
+    public void Reward()
+    {
+        //Using sqrt to give small values a relatively bigger negative reward
+        float posDifference = -Mathf.Sqrt(Vector3.Distance(this.transform.position, lastTransform.position)) * Time.deltaTime;
+        AddReward(posDifference);
+
+        //Angle difference between the 2 quaternions
+        float angleDifference = -Mathf.Sqrt(2 * Mathf.Acos(Quaternion.Dot(this.transform.rotation, lastTransform.rotation))) * Time.deltaTime;
+        AddReward(angleDifference);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        PingPongBall ball = collision.collider.gameObject.GetComponent<PingPongBall>();
+        if (ball != null)
+        {
+            ball.HitBall(this);
+            AddReward(5f);
+        }
+        else
+            AddReward(-1f);
     }
 }
