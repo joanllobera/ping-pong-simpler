@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour
     private Vector3 oldPos;
     public Vector3 velocity;
     public float magnitude;
-    public float coeficient = 1000;
+    public float coeficient = 100;
 
     private void Start()
     {
@@ -83,7 +83,7 @@ public class BallController : MonoBehaviour
             /*rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;*/
             rb.AddForce(dir * collisionForce);
-            
+            coeficient -= (Mathf.Sqrt((dir.x * dir.y * dir.z) * collisionForce))/10;
             //Debug.Log(dir * collisionForce);
             //Debug.DrawLine(transform.position, collision.contacts[0].point * 100, Color.black, 10);
         }

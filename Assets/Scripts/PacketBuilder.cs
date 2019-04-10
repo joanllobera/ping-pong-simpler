@@ -66,6 +66,13 @@ public static class PacketBuilder
                     size += Trans.Size;
                 break;
 
+            case Packet.PacketType.Walls:
+                List<Trans> walls = (List<Trans>)data;
+                size += 1; // Number of objects (0-255)
+                foreach (var obj in walls)
+                    size += Trans.Size;
+                break;
+
             case Packet.PacketType.Benchmark:
                 size += NetBenchmarks.Size;
                 break;
@@ -112,6 +119,13 @@ public static class PacketBuilder
                 List<Trans> objects = (List<Trans>)data;
                 content.Add((byte)objects.Count);
                 foreach (var trans in objects)
+                    content.AddRange(trans.Serialize());
+                break;
+
+            case Packet.PacketType.Walls:
+                List<Trans> walls = (List<Trans>)data;
+                content.Add((byte)walls.Count);
+                foreach (var trans in walls)
                     content.AddRange(trans.Serialize());
                 break;
 

@@ -288,7 +288,7 @@ Prefab:
     - target: {fileID: 54808707087606518, guid: bafbcd06b6d08d24d90049d20213ba19,
         type: 2}
       propertyPath: m_Mass
-      value: 0.005
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 114714893836990456, guid: bafbcd06b6d08d24d90049d20213ba19,
         type: 2}
@@ -298,12 +298,12 @@ Prefab:
     - target: {fileID: 114714893836990456, guid: bafbcd06b6d08d24d90049d20213ba19,
         type: 2}
       propertyPath: collisionForce
-      value: 100
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 114714893836990456, guid: bafbcd06b6d08d24d90049d20213ba19,
         type: 2}
       propertyPath: forceMagnitude
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 114714893836990456, guid: bafbcd06b6d08d24d90049d20213ba19,
         type: 2}
@@ -315,6 +315,11 @@ Prefab:
         type: 2}
       propertyPath: m_IsKinematic
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114714893836990456, guid: bafbcd06b6d08d24d90049d20213ba19,
+        type: 2}
+      propertyPath: coeficient
+      value: 1000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
@@ -1309,12 +1314,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694a2ebfa3635c64784d9b7c37d023f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Walls: {fileID: 1800283328}
   protocol: 0
   spawnTransforms:
   - {fileID: 1518604324}
   - {fileID: 891256535}
   objectsToSend:
   - {fileID: 284377188}
+  WallsTransforms: []
   benchmarkEnabled: 0
 --- !u!1 &1550466416
 GameObject:

@@ -31,6 +31,8 @@ public class ClientManager : MonoBehaviour
     // List of objects
     private List<Trans> objects = new List<Trans>();
 
+    public GameObject Walls;
+
     private bool online = false;
     private bool receivedNewText = false;
     private string recvText;
@@ -156,6 +158,15 @@ public class ClientManager : MonoBehaviour
                         t.Rot = o.Rot;
                     }
                 }
+                break;
+
+            case Packet.PacketType.Walls:
+                List<Trans> walls = ((PacketObjects)packet).Data;
+
+                Walls.gameObject.transform.GetChild(0).transform.position = walls[0].Pos;
+                Walls.gameObject.transform.GetChild(1).transform.position = walls[1].Pos;
+                Walls.gameObject.transform.GetChild(2).transform.position = walls[2].Pos;
+                Walls.gameObject.transform.GetChild(3).transform.position = walls[3].Pos;
                 break;
 
             case Packet.PacketType.Benchmark:
