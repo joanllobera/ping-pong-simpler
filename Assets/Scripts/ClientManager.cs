@@ -41,6 +41,8 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Input_Sources hand;
     public SteamVR_Action_Boolean triggerPress;
 
+    public GameObject paddle;
+
     private void Start()
     {
         // Fix the target framerate
@@ -123,7 +125,15 @@ public class ClientManager : MonoBehaviour
                 string text = ((PacketText)packet).Data;
                 if (text == Constants.PaddleUpRequest)
                 {
+                    Debug.Log("PaddleUp On");
                     // Hacer que la pala sea mas grande en el Cliente.
+                    paddle.transform.localScale *= 2.0f;
+                }
+                else if (text == Constants.PaddleUpStopRequest)
+                {
+                    Debug.Log("PaddleUp Off");
+                    // Hacer que la pala sea mas pequeña en el Cliente.
+                    paddle.transform.localScale /= 2.0f;
                 }
                 else
                 {
@@ -224,6 +234,7 @@ public class ClientManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.P)) // Send the PaddleUp Request
         {
+            Debug.Log("PaddleUp Request Send");
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpRequest);
             client.Send(packet.ToArray(), packet.Size);
         }
