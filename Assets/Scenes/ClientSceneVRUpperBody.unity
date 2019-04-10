@@ -352,6 +352,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   protocol: 0
   avatar: {fileID: 289511340}
+  Walls:
+  - {fileID: 1593266582}
+  - {fileID: 927205611}
+  - {fileID: 504282506}
+  - {fileID: 1723285825}
   hand: 1
   triggerPress:
     actionPath: /actions/default/in/GrabPinch
