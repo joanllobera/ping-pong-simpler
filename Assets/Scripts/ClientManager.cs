@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Valve.VR;
 
 public class ClientManager : MonoBehaviour
 {
@@ -31,15 +32,14 @@ public class ClientManager : MonoBehaviour
     // List of objects
     private List<Trans> objects = new List<Trans>();
 
-    public GameObject Walls;
-
     private bool online = false;
     private bool receivedNewText = false;
     private string recvText;
     private Text recvTextField;
     private Text onlineTxt;
 
-    private SteamVR_TrackedController inputController;
+    public SteamVR_Input_Sources hand;
+    public SteamVR_Action_Boolean triggerPress;
 
     private void Start()
     {
@@ -160,15 +160,6 @@ public class ClientManager : MonoBehaviour
                 }
                 break;
 
-            case Packet.PacketType.Walls:
-                List<Trans> walls = ((PacketObjects)packet).Data;
-
-                Walls.gameObject.transform.GetChild(0).transform.position = walls[0].Pos;
-                Walls.gameObject.transform.GetChild(1).transform.position = walls[1].Pos;
-                Walls.gameObject.transform.GetChild(2).transform.position = walls[2].Pos;
-                Walls.gameObject.transform.GetChild(3).transform.position = walls[3].Pos;
-                break;
-
             case Packet.PacketType.Benchmark:
                 NetBenchmarks b = ((PacketBenchmark)packet).Data;
                 b.recvTimeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
@@ -218,22 +209,11 @@ public class ClientManager : MonoBehaviour
             }
         }
 
-        if (inputController == null)
+        if (triggerPress.GetStateDown(hand))
         {
-            inputController = GameObject.FindObjectOfType<SteamVR_TrackedController>();
-            if (inputController != null)
-            {
-                inputController.TriggerClicked += OnTriggerClicked;
-            }
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
         }
-    }
-
-    private void OnTriggerClicked(object sender, ClickedEventArgs e)
-    {
-        //Debug.Log("Trigger Pressed");
-        // When the server interprets this packet, the ball is served to the client that made the request
-        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
-        client.Send(packet.ToArray(), packet.Size);
     }
 
     private void ProcessOponents()
