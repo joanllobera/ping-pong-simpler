@@ -14,7 +14,6 @@ public class BallPosition : MonoBehaviour {
     public GameObject floor;
 
     private bool firstBot;
-    private bool secondBot; 
 
     private bool lastPlayerTouchingBall;           //True = Is from player1    False = Is from player2
 
@@ -32,7 +31,6 @@ public class BallPosition : MonoBehaviour {
         puntuationP2 = 0.0f;
 
         firstBot = false;
-        secondBot = false;
     }
 	
 	// Update is called once per frame
@@ -90,7 +88,7 @@ public class BallPosition : MonoBehaviour {
 
         }
 
-        if (col.gameObject.name == "Box2")
+        if (col.gameObject.name == "Box2")          //Campo Player 1
         {
             Debug.Log("Collision with field2");
             if (lastPlayerTouchingBall)
@@ -154,6 +152,6 @@ public class BallPosition : MonoBehaviour {
     private void DirectionBallChanged()
     {
         firstBot = false;
-        secondBot = false;
+        
     }
 }
