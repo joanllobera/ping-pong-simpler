@@ -6,12 +6,11 @@ public class BallPosition : MonoBehaviour {
 
     private BallController ballController;
 
+    public ScorePanel panel;                        //Instanciar el panel
+
     private float ballPos;
     private float preBallPos;
 
-    public GameObject field1;
-    public GameObject field2;
-    public GameObject floor;
 
     private bool firstBot;
 
@@ -33,11 +32,18 @@ public class BallPosition : MonoBehaviour {
         puntuationP2 = 0.0f;
 
         firstBot = false;
+
+
+        
+        panel.ChangePuntuation(puntuationP1, puntuationP2); 
     }
 	
 	// Update is called once per frame
 	void Update () {
         ballPos = transform.position.z;
+
+        
+
         if (ballPos >= preBallPos)              //Si la pelota va dirección a J1 --> J2
         {
             if (!lastPlayerTouchingBall)        //Si hay un cambio de dirección, hay que reiniciar los datos       
@@ -68,7 +74,8 @@ public class BallPosition : MonoBehaviour {
                 Debug.Log("Collision with field1");
                 if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
                 {
-                    puntuationP2 += 1.0f;               //Tocar el propio campo = Punto para el adversario 
+                    puntuationP2 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario 
+                    panel.ChangePuntuation(puntuationP1, puntuationP2);      //Actualizar puntuaciones en el HUD
                     ResetBall();
                 }
                 else                                    //Si toca el campo 2 y el ultimo en tocar la pelota es J2 
@@ -77,7 +84,8 @@ public class BallPosition : MonoBehaviour {
                     //Segundo bote 
                     if (firstBot)
                     {
-                        puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                        puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);  //Act punt
                         ResetBall();
 
                     }
@@ -101,14 +109,16 @@ public class BallPosition : MonoBehaviour {
                 Debug.Log("Collision with field2");
                 if (lastPlayerTouchingBall)
                 {
-                    puntuationP1 += 1.0f;               //Tocar el propio campo = Punto para el adversario
+                    puntuationP1 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario
+                    panel.ChangePuntuation(puntuationP1, puntuationP2);          //Act punt
                     ResetBall();
                 }
                 else
                 {
                     if (firstBot)
                     {
-                        puntuationP2 += 1.0f;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                        puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);    //Act punt
                         ResetBall();
                     }
                     else
@@ -130,12 +140,14 @@ public class BallPosition : MonoBehaviour {
 
                     if (firstBot)                       //Si la bola ya ha botado
                     {
-                        puntuationP1 += 1.0f;
+                        puntuationP1 += sumPuntuationXPoint;
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);  //Act punt
                         ResetBall();
                     }
                     else                                //Si la bola aún no ha botado 
                     {
-                        puntuationP2 += 1.0f;
+                        puntuationP2 += sumPuntuationXPoint;
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);  //Act punt
                         ResetBall();
                     }
                 }
@@ -143,12 +155,14 @@ public class BallPosition : MonoBehaviour {
                 {
                     if (firstBot)                       //Si la bola ya ha botado
                     {
-                        puntuationP2 += 1.0f;
+                        puntuationP2 += sumPuntuationXPoint;
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);  //Act punt
                         ResetBall();
                     }
                     else                                //Si la bola aún no ha botado 
                     {
-                        puntuationP1 += 1.0f;
+                        puntuationP1 += sumPuntuationXPoint;
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);  //Act punt
                         ResetBall();
                     }
 
