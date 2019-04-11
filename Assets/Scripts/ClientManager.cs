@@ -132,7 +132,7 @@ public class ClientManager : MonoBehaviour
                 else if (text == Constants.Collision)
                 {
                     //PLAY SOUND
-                    avatar.GetComponent<AudioSource>().Play();
+                    avatar.GetComponentInChildren<AudioSource>().Play();
                 }
                 else {
                     recvText = ((PacketText)packet).Data;
