@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17604074, g: 0.2203107, b: 0.30263725, a: 1}
+  m_IndirectSpecularColor: {r: 0.1760404, g: 0.22031023, b: 0.30263665, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -201,6 +201,9 @@ MonoBehaviour:
   triggerPress:
     actionPath: /actions/default/in/GrabPinch
     needsReinit: 0
+  gripPress:
+    actionPath: 
+    needsReinit: 0
 --- !u!1001 &143198087
 Prefab:
   m_ObjectHideFlags: 0
@@ -244,12 +247,12 @@ Prefab:
         type: 2}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 1858783243}
+      objectReference: {fileID: 1840154991}
     - target: {fileID: 33449719112968050, guid: 5c64ad2d5b552584bbd71f38520f875b,
         type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1917154584}
+      objectReference: {fileID: 1944772455}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c64ad2d5b552584bbd71f38520f875b, type: 2}
   m_IsPrefabAsset: 0
@@ -481,6 +484,48 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 292994711}
   m_CullTransparentMesh: 0
+--- !u!1001 &860552869
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 1.0395817
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.18472
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0.705
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722804976127656, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 39a194f752e60984c94443aaba772c12, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1001 &1119777164
 Prefab:
   m_ObjectHideFlags: 0
@@ -916,7 +961,7 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1568746856}
   m_CullTransparentMesh: 0
---- !u!21 &1858783243
+--- !u!21 &1840154991
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -1055,7 +1100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66fd13f0319a87c4baa41ed176dcc630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!43 &1917154584
+--- !u!43 &1944772455
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
