@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Name: PingPongLearning
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 1
+    vectorObservationSize: 16
     numStackedVectorObservations: 1
-    vectorActionSize: 01000000
+    vectorActionSize: 06000000
     cameraResolutions: []
     vectorActionDescriptions:
     - 
-    vectorActionSpaceType: 0
-  model: {fileID: 0}
+    - 
+    - 
+    - 
+    - 
+    - 
+    vectorActionSpaceType: 1
+  model: {fileID: 4900000, guid: ecf5d1e7b4a9ff540940b7dded3f87c4, type: 3}

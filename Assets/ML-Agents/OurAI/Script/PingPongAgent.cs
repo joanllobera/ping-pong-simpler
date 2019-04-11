@@ -7,35 +7,32 @@ public class PingPongAgent : Agent {
     
     /*
      TO DO LIST:
-        - Add the necessary torque to the agent so that it gets to the target rotation
-        - Add "energy" punishment to avoid innecesary movements? still untested
-        - Reset method
+        Done - Add the necessary torque to the agent so that it gets to the target rotation
+        Done - Add "energy" punishment to avoid innecesary movements? still untested
+        Done - Reset method
          */
 
     Rigidbody rBody;
+    public PingPongBall ball;
 
     public Transform table;
     public Rigidbody ballRb;
 
-    public Transform lastTransform;
+    private Transform lastTransform;
     public bool isBottomSide;
     //invert Z axis
-    bool invertZ;
-    float invMult;
+    float invMult = -1;
 
     public float maxAxisForce;
 
-    public float maxTorque;
+    public float maxRotationPerSecond;
     Quaternion objectiveEulerAngles;
 
-    //observation of ball bounce 
-    public bool hasBallBounced;
-
-	void Start () {
+	void Awake () {
         rBody = GetComponent<Rigidbody>();
         lastTransform = this.transform;
         rBody.interpolation = RigidbodyInterpolation.Interpolate;
-        invMult = invertZ ? -1.0f : 1.0f;
+        invMult = isBottomSide ? 1.0f : -1.0f;
 	}
 
     public override void CollectObservations()
@@ -54,9 +51,9 @@ public class PingPongAgent : Agent {
 
         //rotation 
         Vector3 rotation = transform.rotation.eulerAngles;
-        AddVectorObs(rotation.x);
+        AddVectorObs(rotation.x * invMult);
         AddVectorObs(rotation.y);
-        AddVectorObs(rotation.z);
+        AddVectorObs(rotation.z * invMult);
 
         //ball relative position (from body)
         Vector3 ballRelPos = ballRb.transform.position - transform.position;
@@ -70,7 +67,7 @@ public class PingPongAgent : Agent {
         AddVectorObs((ballRelPos.z - rBody.velocity.z)*invMult);
 
         //has the ball bounced on your side of the table? 
-        AddVectorObs(hasBallBounced);
+        AddVectorObs(ball.bounced);
     }
 
     public override void AgentAction(float[] vectorAction, string textAction)
@@ -78,8 +75,8 @@ public class PingPongAgent : Agent {
         Vector3 move = new Vector3(maxAxisForce*vectorAction[0]*invMult, maxAxisForce * vectorAction[1], maxAxisForce * vectorAction[2] * invMult);
         rBody.AddForce(move);
 
-        objectiveEulerAngles = Quaternion.Euler(vectorAction[3], vectorAction[4], vectorAction[5]);
-        rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, 180f * Time.deltaTime));
+        objectiveEulerAngles = Quaternion.Euler(vectorAction[3] * invMult, vectorAction[4], vectorAction[5] * invMult);
+        rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, maxRotationPerSecond * Time.deltaTime));
     }
 
     public void Reward()
@@ -91,6 +88,8 @@ public class PingPongAgent : Agent {
         //Angle difference between the 2 quaternions
         float angleDifference = -Mathf.Sqrt(2 * Mathf.Acos(Quaternion.Dot(this.transform.rotation, lastTransform.rotation))) * Time.deltaTime;
         AddReward(angleDifference);
+        //Punish the agent if it is too far away from it's initial position
+        AddReward(Vector3.SqrMagnitude(this.transform.position - new Vector3(0, 1.2f, 1.35f * invMult)) > 1f ? -1f * Time.deltaTime : 0f);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -98,10 +97,30 @@ public class PingPongAgent : Agent {
         PingPongBall ball = collision.collider.gameObject.GetComponent<PingPongBall>();
         if (ball != null)
         {
-            ball.HitBall(this);
-            AddReward(5f);
+            if(ball.lastAgentHit == this)
+            {
+                ball.ResetEnvironment();
+                AddReward(-1f);
+            }
+            else if (ball.bounced)
+            {
+                ball.HitBall(this);
+                AddReward(2f);
+            } else
+            {
+                ball.ResetEnvironment();
+                AddReward(-1f);
+            }
         }
         else
             AddReward(-1f);
+    }
+
+    public void ResetAgent()
+    {
+        this.rBody.velocity = Vector3.zero;
+        this.rBody.angularVelocity = Vector3.zero;
+        this.rBody.MovePosition(new Vector3(0, 1.2f, 1.35f * (isBottomSide ? 1 : -1)));
+        this.rBody.MoveRotation(Quaternion.identity);
     }
 }

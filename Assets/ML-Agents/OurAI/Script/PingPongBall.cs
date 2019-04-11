@@ -8,20 +8,30 @@ public class PingPongBall : MonoBehaviour {
         Done - Check which agent was the last one to touch the ball
         Done - If the ball falls to the ground reward the corresponding agent and punish the other
         Done - if the ball falls on the wrong side of the table reward the corresponding agent and punish the other
-        Done - if the ball bounces to times on the same side of the table reward the ... etc
-        Todo - If any of those happen reset the game
-        Todo - If any of the agents goes outside of his side of the table punish it 
+        Done - if the ball bounces two times on the same side of the table reward the ... etc
+        Done - If any of those happen reset the game
+        Done (in the agent code) - If any of the agents goes outside of his side of the table punish it 
        
     Check HitWall.cs from tenis example for reference
          */
 
     public PingPongAgent AgentA;
     public PingPongAgent AgentB;
+    private Rigidbody rb;
     
     //Last agent that has hit the ball
+    [HideInInspector]
     public PingPongAgent lastAgentHit;
-    private bool bounced;
+    [HideInInspector]
+    public bool bounced;
+    private bool serveBottom = true;
+    private int serves = 0;
 
+    private void Start()
+    {
+        rb = this.GetComponent<Rigidbody>();
+        ResetEnvironment();
+    }
     private void Update()
     {
         if(this.transform.position.y <= 0)
@@ -44,6 +54,7 @@ public class PingPongBall : MonoBehaviour {
         lastAgentHit = agent;
         bounced = false;
     }
+
     public void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.gameObject.CompareTag("Table"))
@@ -64,6 +75,9 @@ public class PingPongBall : MonoBehaviour {
                 else
                     bounced = true;
             }
+        } else
+        {
+            SetRewards(-2f, 2f);
         }
     }
 
@@ -81,7 +95,21 @@ public class PingPongBall : MonoBehaviour {
         lastAgentHit.SetReward(lastAgentHitReward);
         otherAgent.SetReward(otherAgentReward);
 
-        //Reset the simulation
+        ResetEnvironment();
+    }
+
+    public void ResetEnvironment()
+    {
+        AgentA.ResetAgent();
+        AgentB.ResetAgent();
+        if(serves > 2)
+        {
+            serveBottom = !serveBottom;
+        }
+        float factor = serveBottom ? -1 : 1;
+        lastAgentHit = AgentA.isBottomSide & serveBottom ? AgentA : AgentB;
+        this.transform.position = new Vector3(0, 1.35f, 1.3f * factor);
+        this.rb.velocity = Vector3.zero;
     }
 
 
