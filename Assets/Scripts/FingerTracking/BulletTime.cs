@@ -9,7 +9,7 @@ public class BulletTime : MonoBehaviour {
 
     public static BulletTime _instance;
 
-    [SerializeField] private float _percentage = 0.7f;
+    [SerializeField] private float _percentage = 0.2f;
     private bool _bulletTimeActivated = false;
 
     private void Awake() {

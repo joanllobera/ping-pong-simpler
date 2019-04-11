@@ -9,6 +9,8 @@ public class BallController : MonoBehaviour
     public GameObject paddle;
     private Rigidbody rb;
     public bool serve = false;
+    private bool activateBulletTimeBall = false;
+    private float bulletTimeMod = 0.0f;
 
     private Vector3 oldPos;
     public Vector3 velocity;
@@ -48,6 +50,11 @@ public class BallController : MonoBehaviour
             serve = false;
         }
 
+        if (activateBulletTimeBall) {
+            ActivateBulletTime();
+            activateBulletTimeBall = false;
+        }
+
         if(paddle == null)
         {
             paddle = GameObject.Find(Constants.RightHand);
@@ -63,6 +70,9 @@ public class BallController : MonoBehaviour
             velocity = (paddle.transform.position - oldPos) / Time.fixedDeltaTime;
             magnitude = velocity.magnitude;
             oldPos = paddle.transform.position;
+        }
+        if (BulletTime.Instance.SwitchBulletTime) {
+            rb.AddForce((-1 * Physics.gravity) * (1 - bulletTimeMod), ForceMode.Acceleration);
         }
     }
 
@@ -114,8 +124,13 @@ public class BallController : MonoBehaviour
     }
 
     private void TriggerBulletTime(float p_mod) {
+        activateBulletTimeBall = true;
+        bulletTimeMod = p_mod;
+    }
+
+    private void ActivateBulletTime() {
+        rb.velocity *= bulletTimeMod;
         BulletTime.Instance.SwitchBulletTime = true;
-        rb.velocity *= p_mod;
     }
 
     private void OnDestroy() {
