@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-class ServerManager : MonoBehaviour
+public class ServerManager : MonoBehaviour
 {
     public Net.Protocol protocol;
     private Server server = null;
@@ -136,8 +136,10 @@ class ServerManager : MonoBehaviour
                 string text = ((PacketText)packet).Data;
                 if(text == Constants.ServeRequest)
                 {
-                    Debug.Log("Serving Ball");
+                    Debug.Log("Serving Ball");                    
                     ballController.serve = true;
+                    Debug.Log("SendPaddleUpStop");
+                    SendPaddleUpStop();
                 }
                 else if(text == Constants.PaddleUpRequest) //Paddle Up Request
                 {
