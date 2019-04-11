@@ -10,9 +10,9 @@ public class BulletTimeEffect : MonoBehaviour {
 
     private void Awake() {
         _instance = this;
+        ppVolume.profile.TryGetSettings(out colorGradingLayer);
     }
     private void Start() {
-        ppVolume.profile.TryGetSettings(out colorGradingLayer);
         ppVolume.weight = 1;
         colorGradingLayer.active = false;
     }
