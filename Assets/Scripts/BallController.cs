@@ -9,6 +9,7 @@ public class BallController : MonoBehaviour
     public GameObject paddle;
     private Rigidbody rb;
     public bool serve = false;
+    public float magunsConstant = .05f;
 
     private Vector3 oldPos;
     public Vector3 velocity;
@@ -60,6 +61,9 @@ public class BallController : MonoBehaviour
             velocity = (paddle.transform.position - oldPos) / Time.fixedDeltaTime;
             magnitude = velocity.magnitude;
             oldPos = paddle.transform.position;
+
+            Vector3 magnusForce = magunsConstant * Vector3.Cross(rb.velocity, rb.angularVelocity);
+            rb.AddRelativeForce(magnusForce);
         }
     }
 
