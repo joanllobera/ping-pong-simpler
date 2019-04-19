@@ -331,4 +331,24 @@ public class ClientManager : MonoBehaviour
             client.Send(packet.ToArray(), packet.Size);
         }
     }
+
+    /// <summary>
+    /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
+    /// </summary>
+    public void SendBulletTimeRequestByGesture(int state) {
+        if (state == 2) {
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+            client.Send(packet.ToArray(), packet.Size);
+        }
+    }
+
+    /// <summary>
+    /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
+    /// </summary>
+    public void SendServeRequestByGesture(int state) {
+        if (state == 2) {
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
+        }
+    }
 }
