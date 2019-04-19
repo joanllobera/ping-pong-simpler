@@ -46,6 +46,10 @@ class HandRenderer : MonoBehaviour {
   // trigger collider object, only used in skeleton mode
   private GameObject colliderObject = null;
 
+    public List<GameObject> Points {
+        get { return points; }
+    }
+
   IEnumerator Start () {
     // wait until detection is started, so we know what mode we are using
     while (GestureProvider.Status == GestureStatus.NotStarted)
