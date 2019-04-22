@@ -9,6 +9,8 @@ public class BallController : MonoBehaviour
     public GameObject paddle;
     private Rigidbody rb;
     public bool serve = false;
+    bool activePaddleUp = false;
+    float paddleUpMod = 0.0f;
 
     private Vector3 oldPos;
     public Vector3 velocity;
@@ -48,7 +50,13 @@ public class BallController : MonoBehaviour
             serve = false;
         }
 
-        if(paddle == null)
+        if (activePaddleUp)
+        {
+            ActivatePaddleUp();
+            activePaddleUp = false;
+        }
+
+        if (paddle == null)
         {
             paddle = GameObject.Find(Constants.RightHand);
             //paddle = GameObject.Find("Oponent");
@@ -110,8 +118,14 @@ public class BallController : MonoBehaviour
 
     private void TriggerPaddleUp(float p_mod)
     {
+        activePaddleUp = true;
+        paddleUpMod = p_mod;
+    }
+
+    private void ActivatePaddleUp()
+    {
+        paddle.transform.localScale *= paddleUpMod;
         PaddleUp.Instance.SwitchPaddleUp = true;
-        paddle.transform.localScale *= p_mod;
     }
 
     private void OnDestroy()
