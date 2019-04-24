@@ -28,7 +28,7 @@ public class MenuButton : MonoBehaviour {
         else
         {
             Debug.Log("opening newScene");
-            SceneManager.LoadScene("sceneName", LoadSceneMode.Single);
+            SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         }
     }
 }
