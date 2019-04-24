@@ -41,6 +41,10 @@ public class BallController : MonoBehaviour
             transform.position = paddlePos + paddle.transform.forward * 0.2f + paddle.transform.up * 0.3f;
             Debug.DrawLine(paddlePos + paddle.transform.forward * 0.2f, transform.position, Color.green, 10);
 
+
+            Vector3 magnusForce = /*magunsConstant*/ this.GetComponent<Rigidbody>().mass * Vector3.Cross(rb.velocity, rb.angularVelocity);
+            rb.AddRelativeForce(magnusForce);
+
             rb.AddForce((paddlePos + paddle.transform.forward * 0.2f - transform.position).normalized * forceMagnitude);
 
             serve = false;
@@ -62,8 +66,6 @@ public class BallController : MonoBehaviour
             magnitude = velocity.magnitude;
             oldPos = paddle.transform.position;
 
-            Vector3 magnusForce = magunsConstant * Vector3.Cross(rb.velocity, rb.angularVelocity);
-            rb.AddRelativeForce(magnusForce);
         }
     }
 
