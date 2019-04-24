@@ -11,6 +11,8 @@ public class BallPosition : MonoBehaviour {
     private float ballPos;
     private float preBallPos;
 
+    private bool colBox1;
+    private bool colBox2;
 
     private bool firstBot;
 
@@ -33,8 +35,10 @@ public class BallPosition : MonoBehaviour {
 
         firstBot = false;
 
+        colBox1 = false;
+        colBox2 = false;
 
-        
+
         panel.ChangePuntuation(puntuationP1, puntuationP2); 
     }
 	
@@ -69,68 +73,84 @@ public class BallPosition : MonoBehaviour {
     {
         if(col.gameObject.name == "Box1")           //Campo Player 1
         {
-            if (!IsColliding)
+            if (!colBox1)
             {
-                Debug.Log("Collision with field1");
-                if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
+                colBox1 = true;
+                if (!IsColliding)
                 {
-                    puntuationP2 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario 
-                    panel.ChangePuntuation(puntuationP1, puntuationP2);      //Actualizar puntuaciones en el HUD
-                    ResetBall();
-                }
-                else                                    //Si toca el campo 2 y el ultimo en tocar la pelota es J2 
-                {
-
-                    //Segundo bote 
-                    if (firstBot)
+                    //Debug.Log("Collision with field1");
+                    if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
                     {
-                        puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario
-                        panel.ChangePuntuation(puntuationP1, puntuationP2);  //Act punt
+                        puntuationP2 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario 
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);      //Actualizar puntuaciones en el HUD
                         ResetBall();
-
                     }
-                    else
+                    else                                    //Si toca el campo 2 y el ultimo en tocar la pelota es J2 
                     {
-                        firstBot = true;               //Si la pelota vuelve a tocar el mismo campo, será segundo bote 
+
+                        //Segundo bote 
+                        if (firstBot)
+                        {
+                            puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario
+                            panel.ChangePuntuation(puntuationP1, puntuationP2);  //Act punt
+                            ResetBall();
+
+                        }
+                        else
+                        {
+                            firstBot = true;               //Si la pelota vuelve a tocar el mismo campo, será segundo bote 
+                        }
+
+
                     }
-
-
+                    IsColliding = true;
                 }
-                IsColliding = true;
             }
-            
 
         }
-
-        else if (col.gameObject.name == "Box2")          //Campo Player 1
+        else
         {
-            if (!IsColliding)
+            colBox1 = false;
+        }
+
+        if (col.gameObject.name == "Box2")          //Campo Player 1
+        {
+            if (!colBox2)
             {
-                Debug.Log("Collision with field2");
-                if (lastPlayerTouchingBall)
+               colBox2 = true;
+
+                if (!IsColliding)
                 {
-                    puntuationP1 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario
-                    panel.ChangePuntuation(puntuationP1, puntuationP2);          //Act punt
-                    ResetBall();
-                }
-                else
-                {
-                    if (firstBot)
+                    //Debug.Log("Collision with field2");
+                    if (lastPlayerTouchingBall)
                     {
-                        puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario 
-                        panel.ChangePuntuation(puntuationP1, puntuationP2);    //Act punt
+                        puntuationP1 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario
+                        panel.ChangePuntuation(puntuationP1, puntuationP2);          //Act punt
                         ResetBall();
                     }
                     else
                     {
-                        firstBot = true;               //
+                        if (firstBot)
+                        {
+                            puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                            panel.ChangePuntuation(puntuationP1, puntuationP2);    //Act punt
+                            ResetBall();
+                        }
+                        else
+                        {
+                            firstBot = true;               //
+                        }
                     }
+                    IsColliding = true;
                 }
-                IsColliding = true;
             }
         }
+        else
+        {
+            colBox2 = false;
+        }
 
-        else if(col.gameObject.name == "LimitFloor")
+        if(col.gameObject.name == "LimitFloor")
         {
             if (!IsColliding)
             {
