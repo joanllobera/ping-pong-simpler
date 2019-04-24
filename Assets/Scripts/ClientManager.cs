@@ -17,7 +17,7 @@ public class ClientManager : MonoBehaviour
     public Net.Protocol protocol;
     private Client client = null;
 
-    private string ip = "10.40.0.116";//Constants.IP;
+    private string ip = Constants.IP;
     private int port = Constants.PORT;
 
     private bool justSpawned = false;
