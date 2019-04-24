@@ -20,10 +20,14 @@ public class MenuButton : MonoBehaviour {
 
     void OnTriggerEnter(Collider col)
     {
-        //if (sceneName == "") Application.Quit();
-        if (sceneName == null) Application.Quit();
+        if (sceneName == "")
+        {
+            Debug.Log("sceneName is empty string");
+            Application.Quit();
+        }
         else
         {
+            Debug.Log("opening newScene");
             SceneManager.LoadScene("sceneName", LoadSceneMode.Single);
         }
     }
