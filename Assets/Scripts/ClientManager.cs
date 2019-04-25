@@ -17,7 +17,7 @@ public class ClientManager : MonoBehaviour
     public Net.Protocol protocol;
     private Client client = null;
 
-    private string ip = "10.40.0.116";//Constants.IP;
+    private string ip = Constants.IP;
     private int port = Constants.PORT;
 
     private bool justSpawned = false;
@@ -40,11 +40,13 @@ public class ClientManager : MonoBehaviour
 
     public SteamVR_Input_Sources hand;
     public SteamVR_Action_Boolean triggerPress;
+    public SteamVR_Action_Boolean gripPress;    //put as gripPinch
 
     private void Start()
     {
         // Fix the target framerate
         Application.targetFrameRate = 90;
+        BulletTimeEffect.Instance.Effect = false;
 
         // Cache text labels
         recvTextField = GameObject.Find("RecvTxt").GetComponent<Text>();
@@ -120,9 +122,18 @@ public class ClientManager : MonoBehaviour
         switch(packet.Type)
         {
             case Packet.PacketType.Text:
-                recvText = ((PacketText)packet).Data;
-                receivedNewText = true;
-                Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+
+                string text = ((PacketText)packet).Data;
+                if (text == Constants.BulletTimeRequest) {
+                    BulletTimeEffect.Instance.Effect = true;
+                } else if (text == Constants.BulletTimeStopRequest) {
+                    BulletTimeEffect.Instance.Effect = false;
+                }
+                else {
+                    recvText = ((PacketText)packet).Data;
+                    receivedNewText = true;
+                    Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+                }
                 break;
 
             case Packet.PacketType.Spawn:
@@ -212,6 +223,10 @@ public class ClientManager : MonoBehaviour
         if (triggerPress.GetStateDown(hand))
         {
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
+        }
+        else if (gripPress.GetStateDown(hand)) {
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
             client.Send(packet.ToArray(), packet.Size);
         }
     }
