@@ -4,35 +4,46 @@ using UnityEngine;
 using MLAgents;
 
 public class PingPongAgent : Agent {
-    
-    /*
-     TO DO LIST:
-        Done - Add the necessary torque to the agent so that it gets to the target rotation
-        Done - Add "energy" punishment to avoid innecesary movements? still untested
-        Done - Reset method
-         */
 
+    //agent rigid body
     Rigidbody rBody;
+    [HideInInspector]
+    public Vector3 initialPos;
+
+    //The ball
     public PingPongBall ball;
+    private Rigidbody ballRb;
 
-    public Transform table;
-    public Rigidbody ballRb;
+    //past transform
+    private Vector3 lastPos;
+    private Quaternion lastRot;
 
-    private Transform lastTransform;
+    //agent side
     public bool isBottomSide;
-    //invert Z axis
     float invMult = -1;
 
+    //velocity
     public float maxAxisForce;
 
+    //rotation
     public float maxRotationPerSecond;
     Quaternion objectiveEulerAngles;
 
-	void Awake () {
+    //tableVariables
+    [HideInInspector]
+    public PingPongArena arena;
+    public Transform table;
+
+    void Awake () {
         rBody = GetComponent<Rigidbody>();
-        lastTransform = this.transform;
+
+        //set the original Position and rotation
+        initialPos = lastPos = transform.position;
+        lastRot = transform.rotation;
+
         rBody.interpolation = RigidbodyInterpolation.Interpolate;
         invMult = isBottomSide ? 1.0f : -1.0f;
+        ballRb = ball.GetComponent<Rigidbody>();
 	}
 
     public override void CollectObservations()
@@ -55,13 +66,13 @@ public class PingPongAgent : Agent {
         AddVectorObs(rotation.y);
         AddVectorObs(rotation.z * invMult);
 
-        //ball relative position (from body)
+        //ball relative position (from table)
         Vector3 ballRelPos = ballRb.transform.position - transform.position;
-        AddVectorObs(ballRelPos.x);
+        AddVectorObs(ballRelPos.x*invMult);
         AddVectorObs(ballRelPos.y);
-        AddVectorObs(ballRelPos.z);
+        AddVectorObs(ballRelPos.z*invMult);
 
-        //ball relative Velocity (from body)
+        //ball velocity
         AddVectorObs((ballRelPos.x - rBody.velocity.x)*invMult);
         AddVectorObs(ballRelPos.y - rBody.velocity.y);
         AddVectorObs((ballRelPos.z - rBody.velocity.z)*invMult);
@@ -72,34 +83,41 @@ public class PingPongAgent : Agent {
 
     public override void AgentAction(float[] vectorAction, string textAction)
     {
-        Vector3 move = new Vector3(maxAxisForce*vectorAction[0]*invMult, maxAxisForce * vectorAction[1], maxAxisForce * vectorAction[2] * invMult);
-        rBody.AddForce(move);
+        Vector3 move = new Vector3();
+        move.x = Mathf.Lerp(-maxAxisForce, maxAxisForce, (vectorAction[0] - 0.5f)* 2 * invMult);
+        move.y = 0;
+        move.z = 0;
 
-        objectiveEulerAngles = Quaternion.Euler(vectorAction[3] * invMult, vectorAction[4], vectorAction[5] * invMult);
-        rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, maxRotationPerSecond * Time.deltaTime));
+        //objectiveEulerAngles = Quaternion.Euler(Mathf.Lerp(-180,180, vectorAction[3]*invMult ), Mathf.Lerp(-180, 180, vectorAction[4]), Mathf.Lerp(-180, 180, vectorAction[5] * invMult));
+        //rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, maxRotationPerSecond * Time.deltaTime));
     }
 
     public void Reward()
     {
         //Using sqrt to give small values a relatively bigger negative reward
-        float posDifference = -Mathf.Sqrt(Vector3.Distance(this.transform.position, lastTransform.position)) * Time.deltaTime;
+        float posDifference = -Mathf.Sqrt(Vector3.Distance(this.transform.position, lastPos)) * Time.deltaTime;
         AddReward(posDifference);
 
         //Angle difference between the 2 quaternions
-        float angleDifference = -Mathf.Sqrt(2 * Mathf.Acos(Quaternion.Dot(this.transform.rotation, lastTransform.rotation))) * Time.deltaTime;
+        float angleDifference = -Mathf.Sqrt(2 * Mathf.Acos(Quaternion.Dot(this.transform.rotation, lastRot))) * Time.deltaTime;
         AddReward(angleDifference);
+
         //Punish the agent if it is too far away from it's initial position
         AddReward(Vector3.SqrMagnitude(this.transform.position - new Vector3(0, 1.2f, 1.35f * invMult)) > 1f ? -1f * Time.deltaTime : 0f);
+
+        //set positions for next frame
+        lastPos = transform.position;
+        lastRot = transform.rotation;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        PingPongBall ball = collision.collider.gameObject.GetComponent<PingPongBall>();
+        /*PingPongBall ball = collision.collider.gameObject.GetComponent<PingPongBall>();
         if (ball != null)
         {
             if(ball.lastAgentHit == this)
             {
-                ball.ResetEnvironment();
+                //ball.ResetEnvironment();
                 AddReward(-1f);
             }
             else if (ball.bounced)
@@ -108,19 +126,31 @@ public class PingPongAgent : Agent {
                 AddReward(2f);
             } else
             {
-                ball.ResetEnvironment();
+                //ball.ResetEnvironment();
                 AddReward(-1f);
             }
         }
         else
             AddReward(-1f);
+        */
+        if (collision.collider.gameObject.tag == "Ball")
+        {
+            ball.HitBall(this);
+        }
+        else
+        {
+            AddReward(-1f);
+            //arena.ResetGame();
+        }
     }
 
     public void ResetAgent()
     {
         this.rBody.velocity = Vector3.zero;
         this.rBody.angularVelocity = Vector3.zero;
-        this.rBody.MovePosition(new Vector3(0, 1.2f, 1.35f * (isBottomSide ? 1 : -1)));
-        this.rBody.MoveRotation(Quaternion.identity);
+        //this.rBody.MovePosition(initialPos);
+        //this.rBody.MoveRotation(Quaternion.identity);
+        rBody.position = initialPos;
+        rBody.rotation = Quaternion.identity;
     }
 }

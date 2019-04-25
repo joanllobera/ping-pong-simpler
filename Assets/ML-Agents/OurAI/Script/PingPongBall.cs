@@ -3,20 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PingPongBall : MonoBehaviour {
-    /*
-     TO DO LIST:
-        Done - Check which agent was the last one to touch the ball
-        Done - If the ball falls to the ground reward the corresponding agent and punish the other
-        Done - if the ball falls on the wrong side of the table reward the corresponding agent and punish the other
-        Done - if the ball bounces two times on the same side of the table reward the ... etc
-        Done - If any of those happen reset the game
-        Done (in the agent code) - If any of the agents goes outside of his side of the table punish it 
-       
-    Check HitWall.cs from tenis example for reference
-         */
 
-    public PingPongAgent AgentA;
-    public PingPongAgent AgentB;
+    public PingPongAgent AgentBottom;
+    public PingPongAgent AgentTop;
     private Rigidbody rb;
     
     //Last agent that has hit the ball
@@ -27,32 +16,39 @@ public class PingPongBall : MonoBehaviour {
     private bool serveBottom = true;
     private int serves = 0;
 
-    private void Start()
+    [HideInInspector]
+    public PingPongArena arena;
+    private void Awake()
     {
         rb = this.GetComponent<Rigidbody>();
-        ResetEnvironment();
     }
-    private void Update()
+
+   /*private void Update()
     {
         if(this.transform.position.y <= 0)
         {
-            if (bounced)
-            {
-                //lastAgentHit scored
-                SetRewards(5f, -2f);
-            }
-            else
-            {
-                //lastAgentHit failed miserably
-                SetRewards(-2f, 0f);
-            }
+            
         }
-    }
+    }*/
 
     public void HitBall(PingPongAgent agent)
     {
         lastAgentHit = agent;
         bounced = false;
+        if(lastAgentHit == agent)
+        {
+            agent.SetReward(-1f);
+            arena.ResetGame();
+            serveBottom = !serveBottom;
+        }
+        else
+        {
+            if (bounced)
+                agent.SetReward(0.1f);
+            else
+                agent.SetReward(-1f);
+        }
+
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -63,53 +59,85 @@ public class PingPongBall : MonoBehaviour {
             if (CheckSide())
             {
                 //The ball cannot bounce on the same side as the lastAgentHit
-                SetRewards(-2f, 5f);
-
+                SetRewards(-2f, 0f);
+                arena.ResetGame();
+                serveBottom = !serveBottom;
             } else
             {
                 //The ball has already bounced once
                 if (bounced)
                 {
-                    SetRewards(5f, -2f);
+                    SetRewards(0f, -2f);
+                    arena.ResetGame();
+                    serveBottom = !serveBottom;
                 }
                 else
                     bounced = true;
             }
-        } else
+        }
+        if (collision.collider.gameObject.CompareTag("Ground"))
         {
-            SetRewards(-2f, 2f);
+            if (!CheckSide())
+            {
+                if (bounced)
+                {
+                    //lastAgentHit scored
+                    SetRewards(5f, -2f);
+                    arena.ResetGame();
+                }
+                else
+                {
+                    //lastAgentHit failed miserably
+                    SetRewards(-2f, 0f);
+                    arena.ResetGame();
+                    serveBottom = !serveBottom;
+                }
+            }
+            else
+            {
+                //lastAgentHit failed miserably
+                SetRewards(-2f, 0f);
+                arena.ResetGame();
+                serveBottom = !serveBottom;
+            }
+        }
+        else
+        {
+            SetRewards(-2f, 0f);
         }
     }
 
+    //Returns True if the ball is in the same side as the lastAgentHit (last agent that hit the ball)
+    //Bottom side = positive z position of the ball
     public bool CheckSide()
     {
-        //Returns True if the ball is in the same side as the lastAgentHit (last agent that hit the ball)
-        //Bottom side = positive z position of the ball
         return (lastAgentHit.isBottomSide ? 1 : -1) * this.transform.position.z > 0;
     }
 
     public void SetRewards(float lastAgentHitReward, float otherAgentReward)
     {
-        PingPongAgent otherAgent = lastAgentHit == AgentA ? AgentB : AgentA;
+        PingPongAgent otherAgent = lastAgentHit == AgentBottom ? AgentTop : AgentBottom;
 
         lastAgentHit.SetReward(lastAgentHitReward);
         otherAgent.SetReward(otherAgentReward);
-
-        ResetEnvironment();
     }
 
-    public void ResetEnvironment()
+    public void ResetPosition()
     {
-        AgentA.ResetAgent();
-        AgentB.ResetAgent();
-        if(serves > 2)
-        {
-            serveBottom = !serveBottom;
-        }
-        float factor = serveBottom ? -1 : 1;
-        lastAgentHit = AgentA.isBottomSide & serveBottom ? AgentA : AgentB;
-        this.transform.position = new Vector3(0, 1.35f, 1.3f * factor);
+
         this.rb.velocity = Vector3.zero;
+        this.rb.angularVelocity = Vector3.zero;
+        if (serveBottom)
+        {
+            transform.position = AgentBottom.initialPos + new Vector3(0, 0.25f, 0);
+            lastAgentHit = AgentTop;
+        }
+        else
+        {
+            transform.position = AgentTop.initialPos + new Vector3(0, 0.25f, 0);
+            lastAgentHit = AgentBottom;
+        }
+        bounced = true;
     }
 
 
