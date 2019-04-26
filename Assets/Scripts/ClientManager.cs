@@ -46,7 +46,7 @@ public class ClientManager : MonoBehaviour
     {
         // Fix the target framerate
         Application.targetFrameRate = 90;
-        BulletTimeEffect.Instance.Effect = false;
+        if(BulletTimeEffect.Instance != null) BulletTimeEffect.Instance.Effect = false;
 
         // Cache text labels
         recvTextField = GameObject.Find("RecvTxt").GetComponent<Text>();
@@ -124,9 +124,9 @@ public class ClientManager : MonoBehaviour
             case Packet.PacketType.Text:
 
                 string text = ((PacketText)packet).Data;
-                if (text == Constants.BulletTimeRequest) {
+                if (text == Constants.BulletTimeRequest && BulletTimeEffect.Instance != null) {
                     BulletTimeEffect.Instance.Effect = true;
-                } else if (text == Constants.BulletTimeStopRequest) {
+                } else if (text == Constants.BulletTimeStopRequest && BulletTimeEffect.Instance != null) {
                     BulletTimeEffect.Instance.Effect = false;
                 }
                 else {

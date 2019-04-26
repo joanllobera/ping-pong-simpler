@@ -140,7 +140,7 @@ public class ServerManager : MonoBehaviour
                     SendBulletStop();
                     ballController.serve = true;
                 }
-                else if (text == Constants.BulletTimeRequest) {
+                else if (text == Constants.BulletTimeRequest && BulletTime.Instance != null) {
                     Debug.Log("Bullet Time");
                     BulletTime.Instance.TriggerBulletTime();
 
