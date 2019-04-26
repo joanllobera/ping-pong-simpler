@@ -72,13 +72,8 @@ public class BallPosition : MonoBehaviour {
     private void OnCollisionEnter(Collision col)
     {
         if(col.gameObject.name == "Box1")           //Campo Player 1
-        {
-            if (!colBox1)
-            {
-                colBox1 = true;
-                if (!IsColliding)
-                {
-                    //Debug.Log("Collision with field1");
+        {    
+                    
                     if (lastPlayerTouchingBall)             //Si toca el campo 1 y el ultimo en tocar la pelota ha sido J1
                     {
                         puntuationP2 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario 
@@ -103,58 +98,49 @@ public class BallPosition : MonoBehaviour {
 
 
                     }
-                    IsColliding = true;
-                }
+                
             }
 
-        }
-        else
-        {
-            colBox1 = false;
-        }
+        
 
-        if (col.gameObject.name == "Box2")          //Campo Player 1
-        {
-            if (!colBox2)
-            {
-               colBox2 = true;
 
-                if (!IsColliding)
-                {
-                    //Debug.Log("Collision with field2");
-                    if (lastPlayerTouchingBall)
-                    {
-                        puntuationP1 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario
-                        panel.ChangePuntuation(puntuationP1, puntuationP2);          //Act punt
-                        ResetBall();
-                    }
-                    else
-                    {
-                        if (firstBot)
-                        {
-                            puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario 
-                            panel.ChangePuntuation(puntuationP1, puntuationP2);    //Act punt
-                            ResetBall();
-                        }
-                        else
-                        {
-                            firstBot = true;               //
-                        }
-                    }
-                    IsColliding = true;
-                }
+        if (col.gameObject.name == "Box2")          //Campo Player 2
+        {
+           
+            
+               if (!lastPlayerTouchingBall)
+               {
+                   
+                   puntuationP1 += sumPuntuationXPoint;               //Tocar el propio campo = Punto para el adversario
+                   panel.ChangePuntuation(puntuationP1, puntuationP2);          //Act punt
+                   ResetBall();
+               }
+               else
+               {
+                   if (firstBot)
+                   {
+                       
+                       puntuationP2 += sumPuntuationXPoint;           //Tocar 2 veces en campo rival = Punto para el adversario 
+                       panel.ChangePuntuation(puntuationP1, puntuationP2);    //Act punt
+                       ResetBall();
+                   }
+                   else
+                   {
+                       firstBot = true;               //
+                     
+                   }
+               }
+                    
+                
             }
-        }
-        else
-        {
-            colBox2 = false;
-        }
+
+
 
         if(col.gameObject.name == "LimitFloor")
         {
             if (!IsColliding)
             {
-                Debug.Log("Floor Collision!!");
+                
                 if (lastPlayerTouchingBall)             //El ultimo jugador en tocar la bola fue P1
                 {
 
@@ -191,10 +177,12 @@ public class BallPosition : MonoBehaviour {
             }
         }
     }
+    
 
     private void OnCollisionExit(Collision col)
     {
-            IsColliding = false;  
+        
+        IsColliding = false;  
     }
 
         private void ResetBall()
