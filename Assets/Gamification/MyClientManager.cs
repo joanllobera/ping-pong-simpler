@@ -110,6 +110,7 @@ public class MyClientManager : MonoBehaviour
 
     private void OnMsgRecv(object sender, Client.ClientMsgEventArgs e)
     {
+        Debug.Log("MSG recived");
         if(e.Len == 0)
         {
             Debug.Log("Disconnected from the server");
@@ -121,8 +122,9 @@ public class MyClientManager : MonoBehaviour
         int dataIndex = 0;
         Packet packet = PacketBuilder.Parse(e.Buffer, ref dataIndex);
 
+        Debug.Log("Starting reading the MSG");
         // Process the packet
-        switch(packet.Type)
+        switch (packet.Type)
         {
             case Packet.PacketType.Text:
 
@@ -176,16 +178,17 @@ public class MyClientManager : MonoBehaviour
 
             case Packet.PacketType.Punctuation:
 
+                
+
                 string punctuation = ((PacketText)packet).Data;
 
-                Debug.Log(punctuation);
+                
 
                 int pPlayer1, pPlayer2;
                 pPlayer1 = int.Parse(punctuation.Substring(0, punctuation.IndexOf(".")));
                 pPlayer2 = int.Parse(punctuation.Substring(punctuation.IndexOf(".")+1));
 
-                Debug.Log("Punct. player 1: " + pPlayer1);
-                Debug.Log("Punct. player 2: " + pPlayer2);
+                
 
                 scorePanel.ChangePuntuation(pPlayer1, pPlayer2);
                 //else
