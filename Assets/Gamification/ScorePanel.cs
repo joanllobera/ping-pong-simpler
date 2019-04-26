@@ -21,7 +21,7 @@ public class ScorePanel : MonoBehaviour {
         
 	}
 
-   public void ChangePuntuation(float J1Punt, float J2Punt)
+   public void ChangePuntuation(int J1Punt, int J2Punt)
     {
         C1J1.text = J1Punt.ToString();
         C1J2.text = J2Punt.ToString();

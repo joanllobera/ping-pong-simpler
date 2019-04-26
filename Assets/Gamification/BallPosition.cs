@@ -18,9 +18,15 @@ public class BallPosition : MonoBehaviour {
 
     private bool lastPlayerTouchingBall;           //True = Is from player1    False = Is from player2
 
-    private float puntuationP1;
-    private float puntuationP2;
-    public float sumPuntuationXPoint = 1.0f;
+    private int puntuationP1;
+    private int puntuationP2;
+    public int maxPuntuation = 10;
+    public int sumPuntuationXPoint = 1;
+
+
+    //public GameObject MyServerManager;
+
+    public MyServerManager myServerManager;
 
     private bool IsColliding;
     // Use this for initialization
@@ -30,8 +36,8 @@ public class BallPosition : MonoBehaviour {
         ballPos = transform.position.z;
         lastPlayerTouchingBall = true;
 
-        puntuationP1 = 0.0f;
-        puntuationP2 = 0.0f;
+        puntuationP1 = 0;
+        puntuationP2 = 0;
 
         firstBot = false;
 
@@ -176,6 +182,7 @@ public class BallPosition : MonoBehaviour {
                 IsColliding = true;
             }
         }
+ 
     }
     
 
@@ -185,11 +192,14 @@ public class BallPosition : MonoBehaviour {
         IsColliding = false;  
     }
 
-        private void ResetBall()
+    private void ResetBall()
     {
+        myServerManager.SendPunctuationToClient(puntuationP1, puntuationP2);
+
         DirectionBallChanged();
         ballController.serve = true;
         IsColliding = false;
+        EndGame();
     }
 
 
@@ -197,5 +207,12 @@ public class BallPosition : MonoBehaviour {
     {
         firstBot = false;
         
+    }
+    private void EndGame()
+    {
+        if(puntuationP1 >= maxPuntuation || puntuationP2 >= maxPuntuation)
+        {
+            //End the game
+        }
     }
 }

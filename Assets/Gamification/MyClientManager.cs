@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
 
-public class ClientManager : MonoBehaviour
+public class MyClientManager : MonoBehaviour
 {
     public Net.Protocol protocol;
     private Client client = null;
@@ -41,6 +41,9 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Input_Sources hand;
     public SteamVR_Action_Boolean triggerPress;
     public SteamVR_Action_Boolean gripPress;    //put as gripPinch
+
+
+    public ScorePanel scorePanel;
 
     private void Start()
     {
@@ -172,11 +175,25 @@ public class ClientManager : MonoBehaviour
                 break;
 
             case Packet.PacketType.Punctuation:
-                List<Trans> PuntuationRecv = ((PacketObjects)packet).Data;
-                foreach (var o in PuntuationRecv)
-                {
-                    
-                }
+
+                string punctuation = ((PacketText)packet).Data;
+
+                Debug.Log(punctuation);
+
+                int pPlayer1, pPlayer2;
+                pPlayer1 = int.Parse(punctuation.Substring(0, punctuation.IndexOf(".")));
+                pPlayer2 = int.Parse(punctuation.Substring(punctuation.IndexOf(".")+1));
+
+                Debug.Log("Punct. player 1: " + pPlayer1);
+                Debug.Log("Punct. player 2: " + pPlayer2);
+
+                scorePanel.ChangePuntuation(pPlayer1, pPlayer2);
+                //else
+                //{
+                //    recvText = ((PacketText)packet).Data;
+                //    receivedNewText = true;
+                //    Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+                //}
                 break;
 
             case Packet.PacketType.Benchmark:
