@@ -71,6 +71,11 @@ public static class PacketBuilder
                 size += punctuation.Length;
                 break;
 
+            case Packet.PacketType.Endgame:
+                string endgame = (string)data;
+                size += endgame.Length;
+                break;
+
             case Packet.PacketType.Benchmark:
                 size += NetBenchmarks.Size;
                 break;
@@ -123,6 +128,11 @@ public static class PacketBuilder
             case Packet.PacketType.Punctuation:
                 string puntuationText = (string)data;
                 content.AddRange(Encoding.ASCII.GetBytes(puntuationText));
+                break;
+
+            case Packet.PacketType.Endgame:
+                string endgameText = (string)data;
+                content.AddRange(Encoding.ASCII.GetBytes(endgameText));
                 break;
 
             case Packet.PacketType.Benchmark:

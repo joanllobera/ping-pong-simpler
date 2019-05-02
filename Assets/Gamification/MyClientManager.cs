@@ -44,6 +44,7 @@ public class MyClientManager : MonoBehaviour
 
 
     public ScorePanel scorePanel;
+    public WinnerCanvas winnerPanel;
 
     private void Start()
     {
@@ -197,6 +198,21 @@ public class MyClientManager : MonoBehaviour
                 //    receivedNewText = true;
                 //    Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
                 //}
+                break;
+
+            case Packet.PacketType.Endgame:
+
+                string endgame = ((PacketText)packet).Data;
+
+                int winner; 
+                int puntuationWinner, puntuationLosser;
+                winner = int.Parse(endgame.Substring(14, endgame.IndexOf(",")));
+                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(", with "), endgame.IndexOf(" and a difference of ")));
+                puntuationLosser = int.Parse(endgame.Substring(endgame.IndexOf(" and a difference of ")));
+
+
+
+                winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLosser);
                 break;
 
             case Packet.PacketType.Benchmark:

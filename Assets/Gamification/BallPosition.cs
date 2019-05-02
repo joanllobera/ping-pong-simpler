@@ -20,7 +20,9 @@ public class BallPosition : MonoBehaviour {
 
     private int puntuationP1;
     private int puntuationP2;
-    public int maxPuntuation = 10;
+    private string winnerP1 = "Player 1";
+    private string winnerP2 = "Player 2";
+    public int maxPuntuation = 20;
     public int sumPuntuationXPoint = 1;
 
 
@@ -72,6 +74,14 @@ public class BallPosition : MonoBehaviour {
         }
 
         preBallPos = ballPos;                   //Actualización de la pelota para el proximo frame
+
+        if(puntuationP1 >= maxPuntuation)
+        {
+            myServerManager.SendEndgameToClient(winnerP1, puntuationP1, puntuationP2);
+        }else if(puntuationP2 >= maxPuntuation)
+        {
+            myServerManager.SendEndgameToClient(winnerP2, puntuationP2, puntuationP1);
+        }
 
     }
 
@@ -199,7 +209,6 @@ public class BallPosition : MonoBehaviour {
         DirectionBallChanged();
         ballController.serve = true;
         IsColliding = false;
-        EndGame();
     }
 
 
@@ -208,11 +217,5 @@ public class BallPosition : MonoBehaviour {
         firstBot = false;
         
     }
-    private void EndGame()
-    {
-        if(puntuationP1 >= maxPuntuation || puntuationP2 >= maxPuntuation)
-        {
-            //End the game
-        }
-    }
+
 }
