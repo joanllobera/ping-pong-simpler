@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-class ServerManager : MonoBehaviour
+public class ServerManager : MonoBehaviour
 {
     public Net.Protocol protocol;
     private Server server = null;
@@ -137,7 +137,18 @@ class ServerManager : MonoBehaviour
                 if(text == Constants.ServeRequest)
                 {
                     Debug.Log("Serving Ball");
+                    SendBulletStop();
                     ballController.serve = true;
+                }
+                else if (text == Constants.BulletTimeRequest) {
+                    Debug.Log("Bullet Time");
+                    BulletTime.Instance.TriggerBulletTime();
+
+                    //enviar un paquete bullet time notificando al cliente
+                    if (BulletTime.Instance.SwitchBulletTime) {
+                        Packet bulletPack = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                        server.Send(e.Client, bulletPack.ToArray(), bulletPack.Size);
+                    }
                 }
                 Debug.Log("[C(" + e.Client + ")->S]: " + text
                     + " (" + packet.Size + " of " + e.Len + " bytes)");
@@ -193,6 +204,13 @@ class ServerManager : MonoBehaviour
         // Send the packet to all the connected clients
         foreach (var client in connectionManager.Connections)
         {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+    }
+
+    public void SendBulletStop() {
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeStopRequest);
+        foreach (var client in connectionManager.Connections) {
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
         }
     }
