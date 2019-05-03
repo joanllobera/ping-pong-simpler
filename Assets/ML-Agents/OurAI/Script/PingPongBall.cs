@@ -114,15 +114,19 @@ public class PingPongBall : MonoBehaviour {
     public void SetRewards(float lastAgentHitReward, float otherAgentReward)
     {
         //PingPongAgent otherAgent = lastAgentHit == AgentBottom ? AgentTop : AgentBottom;
-
-        //lastAgentHit.SetReward(lastAgentHitReward);
+        if(lastAgentHit!=null)
+            lastAgentHit.SetReward(lastAgentHitReward);
+        else
+        {
+            AgentBottom.SetReward(otherAgentReward);
+        }
         //otherAgent.SetReward(otherAgentReward);
     }
 
     public void ResetPosition()
     {
 
-        this.rb.velocity = Vector3.zero;
+        this.rb.velocity = Vector3.up*0.5f;
         this.rb.angularVelocity = Vector3.zero;
         /*if (serveBottom)
         {
@@ -134,7 +138,7 @@ public class PingPongBall : MonoBehaviour {
             transform.position = AgentTop.initialPos + new Vector3(0, 0.25f, 0);
             lastAgentHit = AgentBottom;
         }*/
-        transform.position = AgentBottom.initialPos + new Vector3(Random.RandomRange(-0.5f,0.5f), 0.75f, 0.0f);
+        transform.position = AgentBottom.initialPos + new Vector3(Random.Range(-0.75f,0.75f), 0.75f, 0.0f);
         lastAgentHit = null;    
         bounced = true;
     }
