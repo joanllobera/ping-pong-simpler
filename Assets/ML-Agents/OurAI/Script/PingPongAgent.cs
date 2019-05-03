@@ -39,10 +39,10 @@ public class PingPongAgent : Agent {
 
         //set the original Position and rotation
         initialPos = lastPos = transform.position;
-        //lastRot = transform.rotation;
 
         rBody.interpolation = RigidbodyInterpolation.Interpolate;
         invMult = isBottomSide ? 1.0f : -1.0f;
+
         ballRb = ball.GetComponent<Rigidbody>();
 	}
 
@@ -60,14 +60,7 @@ public class PingPongAgent : Agent {
         AddVectorObs(rBody.velocity.y);
         AddVectorObs(rBody.velocity.z);
 
-        //rotation 
-       /* Vector3 rotation = transform.rotation.eulerAngles;
-        AddVectorObs(rotation.x * invMult);
-        AddVectorObs(rotation.y);
-        AddVectorObs(rotation.z * invMult);
-        */
         //ball relative position (from table)
-
         Vector3 ballRelPos = ballRb.transform.position - table.position;
         AddVectorObs(ballRelPos.x);
         AddVectorObs(ballRelPos.y);
@@ -89,6 +82,8 @@ public class PingPongAgent : Agent {
         move.y = 0;
         move.z = 0;
         rBody.AddForce(move);
+
+
         //objectiveEulerAngles = Quaternion.Euler(Mathf.Lerp(-180,180, vectorAction[3]*invMult ), Mathf.Lerp(-180, 180, vectorAction[4]), Mathf.Lerp(-180, 180, vectorAction[5] * invMult));
         //rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, maxRotationPerSecond * Time.deltaTime));
     }
@@ -113,27 +108,6 @@ public class PingPongAgent : Agent {
 
     private void OnCollisionEnter(Collision collision)
     {
-        /*PingPongBall ball = collision.collider.gameObject.GetComponent<PingPongBall>();
-        if (ball != null)
-        {
-            if(ball.lastAgentHit == this)
-            {
-                //ball.ResetEnvironment();
-                AddReward(-1f);
-            }
-            else if (ball.bounced)
-            {
-                ball.HitBall(this);
-                AddReward(2f);
-            } else
-            {
-                //ball.ResetEnvironment();
-                AddReward(-1f);
-            }
-        }
-        else
-            AddReward(-1f);
-        */
         if (collision.collider.gameObject.tag == "Ball")
         {
             ball.HitBall(this);
@@ -143,10 +117,7 @@ public class PingPongAgent : Agent {
     public void ResetAgent()
     {
         this.rBody.velocity = Vector3.zero;
-        //this.rBody.angularVelocity = Vector3.zero;
-        //this.rBody.MovePosition(initialPos);
-        //this.rBody.MoveRotation(Quaternion.identity);
+        this.rBody.angularVelocity = Vector3.zero;
         rBody.position = initialPos;
-        //rBody.rotation = Quaternion.identity;
     }
 }

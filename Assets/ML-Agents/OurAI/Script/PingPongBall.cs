@@ -11,45 +11,22 @@ public class PingPongBall : MonoBehaviour {
     //Last agent that has hit the ball
     [HideInInspector]
     public PingPongAgent lastAgentHit;
-    [HideInInspector]
+    //[HideInInspector]
     public bool bounced;
     private bool serveBottom = true;
     private int serves = 0;
 
     [HideInInspector]
     public PingPongArena arena;
+
     private void Awake()
     {
         rb = this.GetComponent<Rigidbody>();
     }
 
-   /*private void Update()
-    {
-        if(this.transform.position.y <= 0)
-        {
-            
-        }
-    }*/
-
     public void HitBall(PingPongAgent agent)
     {
-        //if the agent hits the ball 2 times set negative reward and reset the game
-        if(lastAgentHit == agent)
-        {
-            agent.SetReward(-1f);
-            lastAgentHit = agent;
-            arena.ResetGame();
-            return;
-            //serveBottom = !serveBottom;
-        }
-        //if the ball has bounced on the table we add a small reward to the agent
-        else if(bounced)
-        {
-            agent.SetReward(0.05f);
-        }
-        bounced = false;
-        //set last agent hit to this agent
-        lastAgentHit = agent;
+        agent.AddReward(0.05f);
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -57,48 +34,28 @@ public class PingPongBall : MonoBehaviour {
         //colisiones con la mesa
        if (collision.collider.gameObject.CompareTag("Table"))
         {
-            //Check if the ball has bounced on the side of the lastAgentHit
-            if (CheckSide())
+            if (!bounced)
+                bounced = true;
+            else
             {
-                //The ball cannot bounce on the same side as the lastAgentHit
-                SetRewards(-1f, 0f);
+                AgentBottom.SetReward(-0.5f);
                 arena.ResetGame();
-                //serveBottom = !serveBottom;
-            } else
-            {
-                //The ball has already bounced once
-                if (bounced)
-                {
-                    SetRewards(0f, -1f);
-                    arena.ResetGame();
-                    //serveBottom = !serveBottom;
-                }
-                else
-                    bounced = true;
             }
         }
         else if (collision.collider.gameObject.CompareTag("Ground"))
         {
-            if (bounced)
-            {
-                //lastAgentHit scored
-                SetRewards(1f, -1f);
-                arena.ResetGame();
-            }
+            if(bounced)
+                AgentBottom.SetReward(-1f);
             else
-            {
-                //lastAgentHit failed miserably
-                SetRewards(-0f, 1f);
-                arena.ResetGame();
-                serveBottom = !serveBottom;
-            }
+                AgentBottom.SetReward(1f);
+            
+            arena.ResetGame();
         }
         else if(collision.collider.gameObject.CompareTag("HalfTable"))
         {
-            lastAgentHit.AddReward(0.2f);
-            lastAgentHit = null;
+            AgentBottom.AddReward(0.5f);
             bounced = false;
-
+            //arena.ResetGame();
         }
     }
 
@@ -125,20 +82,9 @@ public class PingPongBall : MonoBehaviour {
 
     public void ResetPosition()
     {
-
-        this.rb.velocity = Vector3.up*0.5f;
+        this.rb.velocity = Vector3.up*2f;
         this.rb.angularVelocity = Vector3.zero;
-        /*if (serveBottom)
-        {
-            transform.position = AgentBottom.initialPos + new Vector3(0, 0.25f, 0);
-            lastAgentHit = AgentTop;
-        }
-        else
-        {
-            transform.position = AgentTop.initialPos + new Vector3(0, 0.25f, 0);
-            lastAgentHit = AgentBottom;
-        }*/
-        transform.position = AgentBottom.initialPos + new Vector3(Random.Range(-0.75f,0.75f), 0.75f, 0.0f);
+        transform.position = AgentBottom.initialPos + new Vector3(Random.Range(-0.5f,0.5f), 1.75f, 0.0f);
         lastAgentHit = null;    
         bounced = true;
     }
