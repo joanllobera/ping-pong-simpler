@@ -39,7 +39,7 @@ public class PingPongAgent : Agent {
 
         //set the original Position and rotation
         initialPos = lastPos = transform.position;
-        lastRot = transform.rotation;
+        //lastRot = transform.rotation;
 
         rBody.interpolation = RigidbodyInterpolation.Interpolate;
         invMult = isBottomSide ? 1.0f : -1.0f;
@@ -51,31 +51,32 @@ public class PingPongAgent : Agent {
 
         //relative position (from table)
         Vector3 relativePos = transform.position - table.position;
-        AddVectorObs(relativePos.x * invMult);
+        AddVectorObs(relativePos.x);
         AddVectorObs(relativePos.y);
-        AddVectorObs(relativePos.z * invMult);
+        AddVectorObs(relativePos.z);
 
         //relative velocity 
-        AddVectorObs(rBody.velocity.x * invMult);
+        AddVectorObs(rBody.velocity.x);
         AddVectorObs(rBody.velocity.y);
-        AddVectorObs(rBody.velocity.z * invMult);
+        AddVectorObs(rBody.velocity.z);
 
         //rotation 
-        Vector3 rotation = transform.rotation.eulerAngles;
+       /* Vector3 rotation = transform.rotation.eulerAngles;
         AddVectorObs(rotation.x * invMult);
         AddVectorObs(rotation.y);
         AddVectorObs(rotation.z * invMult);
-
+        */
         //ball relative position (from table)
-        Vector3 ballRelPos = ballRb.transform.position - transform.position;
-        AddVectorObs(ballRelPos.x*invMult);
+
+        Vector3 ballRelPos = ballRb.transform.position - table.position;
+        AddVectorObs(ballRelPos.x);
         AddVectorObs(ballRelPos.y);
-        AddVectorObs(ballRelPos.z*invMult);
+        AddVectorObs(ballRelPos.z);
 
         //ball velocity
-        AddVectorObs((ballRelPos.x - rBody.velocity.x)*invMult);
-        AddVectorObs(ballRelPos.y - rBody.velocity.y);
-        AddVectorObs((ballRelPos.z - rBody.velocity.z)*invMult);
+        AddVectorObs(ballRb.velocity.x);
+        AddVectorObs(ballRb.velocity.y);
+        AddVectorObs(ballRb.velocity.z);
 
         //has the ball bounced on your side of the table? 
         AddVectorObs(ball.bounced);
@@ -84,10 +85,10 @@ public class PingPongAgent : Agent {
     public override void AgentAction(float[] vectorAction, string textAction)
     {
         Vector3 move = new Vector3();
-        move.x = Mathf.Lerp(-maxAxisForce, maxAxisForce, (vectorAction[0] - 0.5f)* 2 * invMult);
+        move.x = Mathf.Lerp(-maxAxisForce, maxAxisForce, (vectorAction[0]+1)/2);
         move.y = 0;
         move.z = 0;
-
+        rBody.AddForce(move);
         //objectiveEulerAngles = Quaternion.Euler(Mathf.Lerp(-180,180, vectorAction[3]*invMult ), Mathf.Lerp(-180, 180, vectorAction[4]), Mathf.Lerp(-180, 180, vectorAction[5] * invMult));
         //rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, maxRotationPerSecond * Time.deltaTime));
     }
@@ -137,20 +138,15 @@ public class PingPongAgent : Agent {
         {
             ball.HitBall(this);
         }
-        else
-        {
-            AddReward(-1f);
-            //arena.ResetGame();
-        }
     }
 
     public void ResetAgent()
     {
         this.rBody.velocity = Vector3.zero;
-        this.rBody.angularVelocity = Vector3.zero;
+        //this.rBody.angularVelocity = Vector3.zero;
         //this.rBody.MovePosition(initialPos);
         //this.rBody.MoveRotation(Quaternion.identity);
         rBody.position = initialPos;
-        rBody.rotation = Quaternion.identity;
+        //rBody.rotation = Quaternion.identity;
     }
 }

@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class PingPongArena : MonoBehaviour {
     public PingPongAgent agentA;
-    public PingPongAgent agentB;
+    //public PingPongAgent agentB;
     public PingPongBall ball;
 
     private void Awake()
     {
         agentA.arena = this;
-        agentB.arena = this;
+        //agentB.arena = this;
 
         agentA.table = transform;
-        agentB.table = transform;
+        //agentB.table = transform;
 
         ball.arena = this;
     }
@@ -26,10 +26,10 @@ public class PingPongArena : MonoBehaviour {
     {
 
         agentA.ResetAgent();
-        agentB.ResetAgent();
+        //agentB.ResetAgent();
         ball.ResetPosition();
         agentA.Done();
-        agentB.Done();
+        //agentB.Done();
     }
 
 }
