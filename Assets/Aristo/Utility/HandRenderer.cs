@@ -50,16 +50,21 @@ class HandRenderer : MonoBehaviour {
         get { return points; }
     }
 
-  IEnumerator Start () {
+    public delegate void VoidDelegate(Transform t);
+    public event VoidDelegate OnSkeletonHandInitialized;
+
+    IEnumerator Start () {
     // wait until detection is started, so we know what mode we are using
     while (GestureProvider.Status == GestureStatus.NotStarted)
       yield return null;
+
+        Debug.Log("START");
 
     // create game objects for points, number of points is determined by mode
     int count = GestureProvider.HaveSkeleton ? 21 : 1;
     for (int i = 0; i < count; i++) {
       var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-      go.name = "point" + i;
+      go.name = "p" + i;
       go.transform.parent = transform;
       go.transform.localScale = Vector3.one * 0.012f;
       go.SetActive(false);
@@ -81,6 +86,8 @@ class HandRenderer : MonoBehaviour {
         else
           GameObject.Destroy(collider);
       }
+      //Llamar evento acabado de inicializar mano
+      OnSkeletonHandInitialized?.Invoke(points[0].transform);
     }
 
     // create game objects for links between keypoints, only used in skeleton mode

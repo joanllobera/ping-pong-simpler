@@ -18,6 +18,7 @@ public static class Constants
     public static string Eye = "Eye";
     public static string LeftHand = "LH";
     public static string RightHand = "RH";
+    public static string LeftFingerTrackingHand = "LHFT";
     public static string Hip = "Hip";
     public static string LeftFoot = "LF";
     public static string RightFoot = "RF";

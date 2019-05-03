@@ -8,6 +8,11 @@ public class FingerIKs : MonoBehaviour {
     [SerializeField] private HandRenderer _leftHand;
     private Vector3[] _handMalcomPointsRegister = new Vector3[21];
     private Quaternion _handMalcomBaseRotationRegister;
+    public Transform _wristTrans = null;
+    public AvatarSystem.AvatarManager _avatarManager;
+    private AvatarSystem.AvatarSensorsController _sensors;
+
+    public Transform GetWrist { get { return _leftHand.Points[0].transform; } }
 
 	// Use this for initialization
 	void Awake () {
@@ -16,14 +21,21 @@ public class FingerIKs : MonoBehaviour {
             _handMalcomPointsRegister[i] = _handMalcomPoints[i] != null ? _handMalcomPoints[i].position : Vector3.zero;
         }
         _handMalcomBaseRotationRegister = _handMalcomPoints[0].transform.rotation;
+
+        this.gameObject.GetComponent<HandRenderer>().OnSkeletonHandInitialized += SetWrist; 
     }
 
     // Update is called once per frame
     void LateUpdate () {
-        if (_leftHand.isLeft) {
-            if (_leftHand.Points[0].activeSelf) {
+        if (_leftHand.isLeft && _leftHand.Points.Count > 0) {
+            if (_leftHand.Points[0].activeSelf)
+            {
+                _sensors.ToggleFingerTrackingUsage(true);
                 _handMalcomPoints[0].position = _leftHand.Points[0].transform.position;
                 _handMalcomPoints[0].rotation = _leftHand.Points[0].transform.rotation; //(Y:90, Z: -90)
+            }
+            else {
+                _sensors.ToggleFingerTrackingUsage(false);
             }/* else {
                 _handMalcomPoints[0].position = _handMalcomPointsRegister[0];
                 _handMalcomPoints[0].rotation = _handMalcomBaseRotationRegister;
@@ -35,4 +47,14 @@ public class FingerIKs : MonoBehaviour {
             }*/
         }
 	}
+
+    private void SetWrist(Transform wrist) {
+        if (_wristTrans != null) return;
+        Debug.Log("WRIST INIT");
+        wrist.rotation = Quaternion.Euler(new Vector3(0, 90, -90));
+        _wristTrans = wrist;
+        _sensors = (AvatarSystem.AvatarSensorsController)_avatarManager.GetController();
+        _sensors.SetWristFingerTracking(wrist);
+        _sensors.ToggleFingerTrackingUsage(true);
+    }
 }

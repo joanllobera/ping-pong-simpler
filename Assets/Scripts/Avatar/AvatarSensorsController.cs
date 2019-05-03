@@ -15,6 +15,20 @@ namespace AvatarSystem
         private bool isClient;
         private int minimumSensors;
 
+        //FingerTracking
+        private bool isUsingFingerTracking = false;
+        ////////////////////////////////////////////////////////////////////////////////////FingerIKs fingerTrackingLeft = null;
+
+        public void ToggleFingerTrackingUsage(bool state) {
+            isUsingFingerTracking = state;
+        }
+
+        public void SetWristFingerTracking(Transform wrist)
+        {
+            Debug.Log("SETWRIST " + wrist.gameObject.name);
+            transformsMap.Add(Constants.LeftFingerTrackingHand, wrist);  //Add finger tracking transform to the dictionary
+        }
+
         public AvatarSensorsController(AvatarBody body, bool isClient, int minimumSensors)
         {
             this.type = AvatarControllerType.SENSORS;
@@ -29,8 +43,10 @@ namespace AvatarSystem
         {
             List<Trans> transforms = new List<Trans>();
 
-            foreach (var pair in transformsMap)
+            foreach (var pair in transformsMap) {
+                Debug.Log("PAIR: " + pair.Key);
                 transforms.Add(new Trans(pair.Value.position, pair.Value.rotation, pair.Key));
+            }
 
             return transforms;
         }
@@ -65,6 +81,7 @@ namespace AvatarSystem
             var rig = Object.FindObjectOfType<SteamVR_PlayArea>();
             var cam = Object.FindObjectOfType<Camera>();
             var sensors = Object.FindObjectsOfType<SteamVR_TrackedObject>();
+            ////////////////////////////////////////////////////////////////////////////////////fingerTrackingLeft = Object.FindObjectOfType<FingerIKs>();
 
             // If the sensors are not valid or not found, the initialization failed
             // The camera is a sensor but not of type SteamVR_TrackedObject
@@ -169,7 +186,15 @@ namespace AvatarSystem
                     camPos.z - offset.z);
             }
 
-            if (transformsMap.ContainsKey(Constants.LeftHand))
+            if (transformsMap.ContainsKey(Constants.LeftFingerTrackingHand) && isUsingFingerTracking) {
+                Debug.Log("Using finger tracking in avatar");
+                animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
+                animator.SetIKPosition(AvatarIKGoal.LeftHand,
+                    transformsMap[Constants.LeftFingerTrackingHand].position);
+                animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
+                animator.SetIKRotation(AvatarIKGoal.LeftHand,
+                    transformsMap[Constants.LeftFingerTrackingHand].rotation);
+            } else if (transformsMap.ContainsKey(Constants.LeftHand))
             {
                 animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
                 animator.SetIKPosition(AvatarIKGoal.LeftHand,
