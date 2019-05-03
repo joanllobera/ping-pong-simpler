@@ -44,7 +44,6 @@ namespace AvatarSystem
             List<Trans> transforms = new List<Trans>();
 
             foreach (var pair in transformsMap) {
-                Debug.Log("PAIR: " + pair.Key);
                 transforms.Add(new Trans(pair.Value.position, pair.Value.rotation, pair.Key));
             }
 
@@ -187,7 +186,6 @@ namespace AvatarSystem
             }
 
             if (transformsMap.ContainsKey(Constants.LeftFingerTrackingHand) && isUsingFingerTracking) {
-                Debug.Log("Using finger tracking in avatar");
                 animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
                 animator.SetIKPosition(AvatarIKGoal.LeftHand,
                     transformsMap[Constants.LeftFingerTrackingHand].position);
@@ -196,7 +194,6 @@ namespace AvatarSystem
                     transformsMap[Constants.LeftFingerTrackingHand].rotation);
             } else if (transformsMap.ContainsKey(Constants.LeftHand))
             {
-                Debug.Log("LEFT HAND CONTAINS DIK");
                 animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
                 animator.SetIKPosition(AvatarIKGoal.LeftHand,
                     transformsMap[Constants.LeftHand].position);
@@ -207,7 +204,6 @@ namespace AvatarSystem
 
             if(transformsMap.ContainsKey(Constants.RightHand))
             {
-                Debug.Log("RIGHT HAND CONTAINS DIK");
                 animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
                 animator.SetIKPosition(AvatarIKGoal.RightHand,
                     transformsMap[Constants.RightHand].position);

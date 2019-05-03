@@ -93,6 +93,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _leftHand: {fileID: 114314305797603378}
+  _wristTrans: {fileID: 0}
+  _avatarManager: {fileID: 0}
 --- !u!114 &114314305797603378
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -128,12 +130,12 @@ MonoBehaviour:
     Left: 16
     Right: 1
     MinMatchFrames: 0
-    MaxMissingFrames: 10
+    MaxMissingFrames: 20
   TriggerCondition:
-    Left: 0
-    Right: 0
-    MinMatchFrames: 0
-    MaxMissingFrames: 10
+    Left: 64
+    Right: 1
+    MinMatchFrames: 5
+    MaxMissingFrames: 20
   OnStateChanged:
     m_PersistentCalls:
       m_Calls:
@@ -167,13 +169,13 @@ MonoBehaviour:
   PrepareCondition:
     Left: 8
     Right: 1
-    MinMatchFrames: 0
-    MaxMissingFrames: 10
+    MinMatchFrames: 10
+    MaxMissingFrames: 30
   TriggerCondition:
     Left: 64
-    Right: 0
-    MinMatchFrames: 0
-    MaxMissingFrames: 10
+    Right: 1
+    MinMatchFrames: 20
+    MaxMissingFrames: 60
   OnStateChanged:
     m_PersistentCalls:
       m_Calls:

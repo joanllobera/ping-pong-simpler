@@ -25,10 +25,10 @@ class HandStateCondition {
   [EnumFlagsAttribute]
   public HandFlag Right = (HandFlag)(-1);
   [Tooltip("How many continous frames of matched hand state before entering this state.")]
-  [Range(0, 20)]
+  [Range(0, 300)]
   public int MinMatchFrames = 0;
   [Tooltip("How many continous frames of non-matched hand state before leaving this state.")]
-  [Range(0, 20)]
+  [Range(0, 300)]
   public int MaxMissingFrames = 10;
 }
 
