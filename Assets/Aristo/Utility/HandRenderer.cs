@@ -50,6 +50,11 @@ class HandRenderer : MonoBehaviour {
         get { return points; }
     }
 
+    public List<GameObject> Links
+    {
+        get { return links; }
+    }
+
     public delegate void VoidDelegate(Transform t);
     public event VoidDelegate OnSkeletonHandInitialized;
 

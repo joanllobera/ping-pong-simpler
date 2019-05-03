@@ -42,6 +42,9 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Action_Boolean triggerPress;
     public SteamVR_Action_Boolean gripPress;    //put as gripPinch
 
+    public delegate void VoidDelegate(FingerIKs.GesturesTypes gesture);
+    public event VoidDelegate OnGestureChanged;
+
     private void Start()
     {
         // Fix the target framerate
@@ -336,9 +339,17 @@ public class ClientManager : MonoBehaviour
     /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
     /// </summary>
     public void SendBulletTimeRequestByGesture(int state) {
-        if (state == 2) {
+        Debug.Log("SERVE " + state);
+        if (state == 1) {
+            OnGestureChanged(FingerIKs.GesturesTypes.OK);
+        } else if (state == 2) {
+            OnGestureChanged(FingerIKs.GesturesTypes.Five);
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
             client.Send(packet.ToArray(), packet.Size);
+        }
+        else if (state == 0)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.None);
         }
     }
 
@@ -346,9 +357,19 @@ public class ClientManager : MonoBehaviour
     /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
     /// </summary>
     public void SendServeRequestByGesture(int state) {
-        if (state == 2) {
+        Debug.Log("SERVE " + state);
+        if (state == 1)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Fist);
+        }
+        else if (state == 2)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Five);
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
             client.Send(packet.ToArray(), packet.Size);
+        }
+        else if (state == 0) {
+            OnGestureChanged(FingerIKs.GesturesTypes.None);
         }
     }
 }
