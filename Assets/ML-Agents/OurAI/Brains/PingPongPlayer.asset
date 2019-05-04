@@ -12,16 +12,21 @@ MonoBehaviour:
   m_Name: PingPongPlayer
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 13
+    vectorObservationSize: 7
     numStackedVectorObservations: 1
-    vectorActionSize: 01000000
+    vectorActionSize: 03000000
     cameraResolutions: []
     vectorActionDescriptions:
+    - 
+    - 
     - 
     vectorActionSpaceType: 1
   keyContinuousPlayerActions: []
   axisContinuousPlayerActions:
   - axis: Horizontal
     index: 0
+    scale: 1
+  - axis: Vertical
+    index: 2
     scale: 1
   discretePlayerActions: []

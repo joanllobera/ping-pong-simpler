@@ -55,10 +55,11 @@ public class PingPongAgent : Agent {
         AddVectorObs(relativePos.y);
         AddVectorObs(relativePos.z);
 
-        //relative velocity 
+        //velocity 
+        /*
         AddVectorObs(rBody.velocity.x);
         AddVectorObs(rBody.velocity.y);
-        AddVectorObs(rBody.velocity.z);
+        AddVectorObs(rBody.velocity.z);*/
 
         //ball relative position (from table)
         Vector3 ballRelPos = ballRb.transform.position - table.position;
@@ -67,9 +68,10 @@ public class PingPongAgent : Agent {
         AddVectorObs(ballRelPos.z);
 
         //ball velocity
+        /*
         AddVectorObs(ballRb.velocity.x);
         AddVectorObs(ballRb.velocity.y);
-        AddVectorObs(ballRb.velocity.z);
+        AddVectorObs(ballRb.velocity.z);*/
 
         //has the ball bounced on your side of the table? 
         AddVectorObs(ball.bounced);
@@ -78,14 +80,17 @@ public class PingPongAgent : Agent {
     public override void AgentAction(float[] vectorAction, string textAction)
     {
         Vector3 move = new Vector3();
-        move.x = Mathf.Lerp(-maxAxisForce, maxAxisForce, (vectorAction[0]+1)/2);
-        move.y = 0;
+        move.x = Mathf.Clamp(vectorAction[0], -1, 1);
+        move.y = Mathf.Clamp(vectorAction[1], -1, 1);
         move.z = 0;
+        move *= maxAxisForce;
         rBody.AddForce(move);
 
-
-        //objectiveEulerAngles = Quaternion.Euler(Mathf.Lerp(-180,180, vectorAction[3]*invMult ), Mathf.Lerp(-180, 180, vectorAction[4]), Mathf.Lerp(-180, 180, vectorAction[5] * invMult));
-        //rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, maxRotationPerSecond * Time.deltaTime));
+        Debug.Log(vectorAction[1]);
+        //AddReward(Mathf.Lerp(0, -0.1f, transform.position.y - initialPos.y));
+       
+        objectiveEulerAngles = Quaternion.Euler(Mathf.Lerp(10,60, Mathf.Clamp(vectorAction[2], 0, 1)),0, 0);
+        rBody.MoveRotation(Quaternion.RotateTowards(this.transform.rotation, objectiveEulerAngles, maxRotationPerSecond * Time.deltaTime));
     }
 
     public void Reward()
@@ -118,6 +123,6 @@ public class PingPongAgent : Agent {
     {
         this.rBody.velocity = Vector3.zero;
         this.rBody.angularVelocity = Vector3.zero;
-        rBody.position = initialPos;
+        rBody.position = initialPos + new Vector3(Random.Range(-0.5f,0.5f),0,0);
     }
 }

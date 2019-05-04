@@ -21,6 +21,11 @@ public class PingPongArena : MonoBehaviour {
     void Start () {
         ResetGame();
 	}
+    private void Update()
+    {
+        if (ball.transform.position.y < -10)
+            ResetGame();
+    }
 
     public void ResetGame()
     {

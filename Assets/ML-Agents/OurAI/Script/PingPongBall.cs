@@ -27,6 +27,15 @@ public class PingPongBall : MonoBehaviour {
     public void HitBall(PingPongAgent agent)
     {
         agent.AddReward(0.05f);
+        if (lastAgentHit!=null)
+        {
+            AgentBottom.SetReward(-1);
+            arena.ResetGame();
+        }
+        else
+        {
+            lastAgentHit = AgentBottom;
+        }
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -38,23 +47,21 @@ public class PingPongBall : MonoBehaviour {
                 bounced = true;
             else
             {
-                AgentBottom.SetReward(-0.5f);
+                AgentBottom.SetReward(-1f);
                 arena.ResetGame();
             }
         }
         else if (collision.collider.gameObject.CompareTag("Ground"))
         {
-            if(bounced)
-                AgentBottom.SetReward(-1f);
-            else
-                AgentBottom.SetReward(1f);
+            AgentBottom.SetReward(-1);
             
             arena.ResetGame();
         }
         else if(collision.collider.gameObject.CompareTag("HalfTable"))
         {
-            AgentBottom.AddReward(0.5f);
+            AgentBottom.AddReward(1f);
             bounced = false;
+            lastAgentHit = null;
             //arena.ResetGame();
         }
     }
