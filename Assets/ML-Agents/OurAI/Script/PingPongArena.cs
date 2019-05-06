@@ -29,12 +29,8 @@ public class PingPongArena : MonoBehaviour {
 
     public void ResetGame()
     {
-
         agentA.ResetAgent();
-        //agentB.ResetAgent();
-        ball.ResetPosition();
         agentA.Done();
-        //agentB.Done();
     }
 
 }

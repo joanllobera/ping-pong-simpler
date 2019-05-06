@@ -34,6 +34,8 @@ public class PingPongAgent : Agent {
     public PingPongArena arena;
     public Transform table;
 
+    public ClientManagerAI clientManager;
+
     void Awake () {
         rBody = GetComponent<Rigidbody>();
 
@@ -86,7 +88,7 @@ public class PingPongAgent : Agent {
         move *= maxAxisForce;
         rBody.AddForce(move);
 
-        Debug.Log(vectorAction[1]);
+        //Debug.Log(vectorAction[1]);
         //AddReward(Mathf.Lerp(0, -0.1f, transform.position.y - initialPos.y));
        
         objectiveEulerAngles = Quaternion.Euler(Mathf.Lerp(10,60, Mathf.Clamp(vectorAction[2], 0, 1)),0, 0);
@@ -124,5 +126,11 @@ public class PingPongAgent : Agent {
         this.rBody.velocity = Vector3.zero;
         this.rBody.angularVelocity = Vector3.zero;
         rBody.position = initialPos + new Vector3(Random.Range(-0.5f,0.5f),0,0);
+
+        if (clientManager.client != null)
+        {
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            clientManager.client.Send(packet.ToArray(), packet.Size);
+        }
     }
 }
