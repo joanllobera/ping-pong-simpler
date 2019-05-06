@@ -70,7 +70,7 @@ public class BallController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
+            //Uncoment upper comments and add this code
             myAngularVelocity = new Vector3(10.5f, 10.5f, 0);
             velocity = new Vector3(10.5f, 10.5f, 10.5f);
 
