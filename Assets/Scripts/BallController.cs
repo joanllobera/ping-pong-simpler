@@ -26,57 +26,60 @@ public class BallController : MonoBehaviour
     }
 
     public float forceMagnitude = 100; //800;
-    //private void Update()
-    //{
-    //    if(paddle != null && serve)
-    //    {
-    //        rb.velocity = Vector3.zero;
-    //        rb.angularVelocity = Vector3.zero;
-    //        transform.rotation = Quaternion.identity;
-    //        Vector3 paddlePos = paddle.transform.position;
-    //        //Debug.DrawLine(paddlePos, paddlePos + paddle.transform.forward * 0.2f, Color.red, 10);
-    //        //Debug.DrawLine(paddlePos + paddle.transform.forward * 0.2f,
-    //        //    paddlePos + paddle.transform.forward * 0.2f + paddle.transform.up * 0.5f,
-    //        //    Color.blue, 10);
+    private void Update()
+    {
+        if (paddle != null && serve)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+            Vector3 paddlePos = paddle.transform.position;
+            //Debug.DrawLine(paddlePos, paddlePos + paddle.transform.forward * 0.2f, Color.red, 10);
+            //Debug.DrawLine(paddlePos + paddle.transform.forward * 0.2f,
+            //    paddlePos + paddle.transform.forward * 0.2f + paddle.transform.up * 0.5f,
+            //    Color.blue, 10);
 
-    //        transform.position = paddlePos + paddle.transform.forward * 0.2f + paddle.transform.up * 0.3f;
-    //        Debug.DrawLine(paddlePos + paddle.transform.forward * 0.2f, transform.position, Color.green, 10);
-
-
-    //        rb.AddForce((paddlePos + paddle.transform.forward * 0.2f - transform.position).normalized * forceMagnitude);
-
-    //        serve = false;
-    //    }
-
-    //    if(paddle == null)
-    //    {
-    //        paddle = GameObject.Find(Constants.RightHand);
-    //        //paddle = GameObject.Find("Oponent");
-    //    }
+            transform.position = paddlePos + paddle.transform.forward * 0.2f + paddle.transform.up * 0.3f;
+            Debug.DrawLine(paddlePos + paddle.transform.forward * 0.2f, transform.position, Color.green, 10);
 
 
-    //}
+            rb.AddForce((paddlePos + paddle.transform.forward * 0.2f - transform.position).normalized * forceMagnitude);
+
+            serve = false;
+        }
+
+        if (paddle == null)
+        {
+            paddle = GameObject.Find(Constants.RightHand);
+            //paddle = GameObject.Find("Oponent");
+        }
+
+
+    }
 
     private void FixedUpdate()
     {
-        //if (paddle != null)
-        //{
-        //    velocity = (paddle.transform.position - oldPos) / Time.fixedDeltaTime;
-        //    magnitude = velocity.magnitude;
-        //    oldPos = paddle.transform.position;
-
-
-        //}
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (paddle != null)
         {
-            //Uncoment upper comments and add this code
-            myAngularVelocity = new Vector3(10.5f, 10.5f, 0);
-            velocity = new Vector3(10.5f, 10.5f, 10.5f);
+            velocity = (paddle.transform.position - oldPos) / Time.fixedDeltaTime;
+            magnitude = velocity.magnitude;
+            oldPos = paddle.transform.position;
 
-            Vector3 magnusForce = /*magunsConstant*/ this.GetComponent<Rigidbody>().mass *  Vector3.Cross(velocity, myAngularVelocity);
+            Vector3 magnusForce = /*magunsConstant*/ this.GetComponent<Rigidbody>().mass * Vector3.Cross(velocity, rb.angularVelocity);
             rb.AddRelativeForce(magnusForce);
+
+
         }
+
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    //Uncoment upper comments and add this code
+        //    myAngularVelocity = new Vector3(10.5f, 10.5f, 0);
+        //    velocity = new Vector3(10.5f, 10.5f, 10.5f);
+
+        //    Vector3 magnusForce = /*magunsConstant*/ this.GetComponent<Rigidbody>().mass *  Vector3.Cross(velocity, myAngularVelocity);
+        //    rb.AddRelativeForce(magnusForce);
+        //}
     }
 
     public float speedMultiplier = 5;
