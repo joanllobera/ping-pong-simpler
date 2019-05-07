@@ -16,12 +16,12 @@ public class FingerSubMenuButton : MonoBehaviour {
     bool isFading = false;
     float fadingValue = 0f;
 
-    private bool isActive;
+    private bool isFingerActive;
     // Use this for initialization
     void Start()
     {
         meshRenderer = GetComponent<MeshRenderer>();
-        isActive = true;
+        isFingerActive = true;
     }
 
     // Update is called once per frame
@@ -51,12 +51,12 @@ public class FingerSubMenuButton : MonoBehaviour {
         switch (buttonID)
         {
             case ButtonID.ACTIVATE:
-                if (isActive)
+                if (isFingerActive)
                 {
-                    isActive = false;
-                }else if (!isActive)
+                    isFingerActive = false;
+                }else if (!isFingerActive)
                 {
-                    isActive = true;
+                    isFingerActive = true;
                 }
                 else
                 {

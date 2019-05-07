@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MenuButton : MonoBehaviour {
+public class MagusSubMenuButton : MonoBehaviour {
 
-
-    
     public MenuManager mm;
     private MeshRenderer meshRenderer;
 
-    public enum ButtonID { PVP, PVAI, CONTROLS, SETTINGS, EXIT}
+    public enum ButtonID { ACTIVATE, RETURN }
     public ButtonID buttonID;
     public string sceneName;
 
@@ -18,19 +16,23 @@ public class MenuButton : MonoBehaviour {
     bool isFading = false;
     float fadingValue = 0f;
 
+    private bool isMagusActive;
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         meshRenderer = GetComponent<MeshRenderer>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        isMagusActive = true;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         if (isFading)
         {
             FadeOut(ref fadingValue);
         }
-	}
+    }
 
     void OnTriggerEnter(Collider col)
     {
@@ -48,23 +50,26 @@ public class MenuButton : MonoBehaviour {
 
         switch (buttonID)
         {
-            case ButtonID.PVP:
+            case ButtonID.ACTIVATE:
+                if (isMagusActive)
+                {
+                    isMagusActive = false;
+                }else if (!isMagusActive)
+                {
+                    isMagusActive = true;
+                }
+                else
+                {
+                    Debug.Log("Unexpected Error");
+                }
+                break;
+
+            case ButtonID.RETURN:
                 SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
                 break;
-            case ButtonID.PVAI:
-                SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-                break;
-            case ButtonID.CONTROLS:
-                SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-                break;
-            case ButtonID.SETTINGS:
-                SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-                break;
-            case ButtonID.EXIT:
-                Application.Quit();
-                break;
+            
         }
-        
+
     }
 
     void OnTriggerExit(Collider col)
