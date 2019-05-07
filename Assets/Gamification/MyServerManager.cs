@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-class MyServerManager : MonoBehaviour
+public class MyServerManager : MonoBehaviour
 {
     public Net.Protocol protocol;
     private Server server = null;
@@ -195,5 +195,16 @@ class MyServerManager : MonoBehaviour
         {
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
         }
+    }
+
+    public void SendPunctuationToClient(int p1, int p2)
+    {
+        string punctuation = p1.ToString("D2") + "." + p2.ToString("D2");
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Punctuation, punctuation);
+        foreach (var client in connectionManager.Connections)
+        {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+        
     }
 }

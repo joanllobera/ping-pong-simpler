@@ -66,6 +66,11 @@ public static class PacketBuilder
                     size += Trans.Size;
                 break;
 
+            case Packet.PacketType.Punctuation:
+                string punctuation = (string)data;
+                size += punctuation.Length;
+                break;
+
             case Packet.PacketType.Benchmark:
                 size += NetBenchmarks.Size;
                 break;
@@ -113,6 +118,11 @@ public static class PacketBuilder
                 content.Add((byte)objects.Count);
                 foreach (var trans in objects)
                     content.AddRange(trans.Serialize());
+                break;
+
+            case Packet.PacketType.Punctuation:
+                string puntuationText = (string)data;
+                content.AddRange(Encoding.ASCII.GetBytes(puntuationText));
                 break;
 
             case Packet.PacketType.Benchmark:

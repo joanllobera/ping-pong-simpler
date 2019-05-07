@@ -23,6 +23,7 @@ public class Packet
         Spawn,          // [S->C]
         OtherClients,   // [S->C]
         Objects,        // [S->C]
+        Punctuation,     // [S->C]
 
         Benchmark,
     };
@@ -93,7 +94,7 @@ public class PacketText
         get
         {
             return Encoding.ASCII.GetString(p.ToArray(), Constants.HEADER_SIZE, 
-                p.Size - Constants.HEADER_SIZE);
+            p.Size - Constants.HEADER_SIZE);
         }
     }
 }

@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
 
-public class ClientManager : MonoBehaviour
+public class MyClientManager : MonoBehaviour
 {
     public Net.Protocol protocol;
     private Client client = null;
@@ -42,11 +42,14 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Action_Boolean triggerPress;
     public SteamVR_Action_Boolean gripPress;    //put as gripPinch
 
+
+    public ScorePanel scorePanel;
+
     private void Start()
     {
         // Fix the target framerate
         Application.targetFrameRate = 90;
-        if(BulletTimeEffect.Instance != null) BulletTimeEffect.Instance.Effect = false;
+        BulletTimeEffect.Instance.Effect = false;
 
         // Cache text labels
         recvTextField = GameObject.Find("RecvTxt").GetComponent<Text>();
@@ -107,6 +110,7 @@ public class ClientManager : MonoBehaviour
 
     private void OnMsgRecv(object sender, Client.ClientMsgEventArgs e)
     {
+        Debug.Log("MSG recived");
         if(e.Len == 0)
         {
             Debug.Log("Disconnected from the server");
@@ -118,15 +122,16 @@ public class ClientManager : MonoBehaviour
         int dataIndex = 0;
         Packet packet = PacketBuilder.Parse(e.Buffer, ref dataIndex);
 
+        Debug.Log("Starting reading the MSG");
         // Process the packet
-        switch(packet.Type)
+        switch (packet.Type)
         {
             case Packet.PacketType.Text:
 
                 string text = ((PacketText)packet).Data;
-                if (text == Constants.BulletTimeRequest && BulletTimeEffect.Instance != null) {
+                if (text == Constants.BulletTimeRequest) {
                     BulletTimeEffect.Instance.Effect = true;
-                } else if (text == Constants.BulletTimeStopRequest && BulletTimeEffect.Instance != null) {
+                } else if (text == Constants.BulletTimeStopRequest) {
                     BulletTimeEffect.Instance.Effect = false;
                 }
                 else {
@@ -172,11 +177,26 @@ public class ClientManager : MonoBehaviour
                 break;
 
             case Packet.PacketType.Punctuation:
-                List<Trans> PuntuationRecv = ((PacketObjects)packet).Data;
-                foreach (var o in PuntuationRecv)
-                {
-                    
-                }
+
+                
+
+                string punctuation = ((PacketText)packet).Data;
+
+                
+
+                int pPlayer1, pPlayer2;
+                pPlayer1 = int.Parse(punctuation.Substring(0, punctuation.IndexOf(".")));
+                pPlayer2 = int.Parse(punctuation.Substring(punctuation.IndexOf(".")+1));
+
+                
+
+                scorePanel.ChangePuntuation(pPlayer1, pPlayer2);
+                //else
+                //{
+                //    recvText = ((PacketText)packet).Data;
+                //    receivedNewText = true;
+                //    Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+                //}
                 break;
 
             case Packet.PacketType.Benchmark:
