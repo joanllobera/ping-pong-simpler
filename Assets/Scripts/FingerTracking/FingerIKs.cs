@@ -33,6 +33,7 @@ public class FingerIKs : MonoBehaviour {
     private GesturesTypes _gesture = GesturesTypes.None;
 
     public Transform GetWrist { get { return _leftHand.Points[0].transform; } }
+    
 
 	// Use this for initialization
 	void Awake () {

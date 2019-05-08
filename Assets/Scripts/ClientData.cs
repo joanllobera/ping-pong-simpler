@@ -145,7 +145,11 @@ public class ClientDataUDP
             {
                 foreach (Trans t in transforms)
                 {
-                    Transform current = instance.transform.Find(t.Id);
+                    Transform current;
+                    if (t.Id == Constants.LeftHand || t.Id == Constants.LeftFingerTrackingHand) {
+                        current = instance.transform.Find(Constants.LeftHand);
+                    } else current = instance.transform.Find(t.Id);
+
                     if (current != null)
                     {
                         current.position = t.Pos;

@@ -44,7 +44,11 @@ namespace AvatarSystem
             List<Trans> transforms = new List<Trans>();
 
             foreach (var pair in transformsMap) {
-                transforms.Add(new Trans(pair.Value.position, pair.Value.rotation, pair.Key));
+                if (pair.Key == Constants.LeftFingerTrackingHand && isUsingFingerTracking) {
+                    transforms.Add(new Trans(pair.Value.position, pair.Value.rotation, pair.Key));
+                } else if (pair.Key == Constants.LeftHand && !isUsingFingerTracking) {
+                    transforms.Add(new Trans(pair.Value.position, pair.Value.rotation, pair.Key));
+                } else transforms.Add(new Trans(pair.Value.position, pair.Value.rotation, pair.Key));
             }
 
             return transforms;

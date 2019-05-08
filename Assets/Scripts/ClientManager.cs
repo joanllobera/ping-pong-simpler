@@ -45,6 +45,9 @@ public class ClientManager : MonoBehaviour
     public delegate void VoidDelegate(FingerIKs.GesturesTypes gesture);
     public event VoidDelegate OnGestureChanged;
 
+    public GameObject fingerIKs;
+    private bool useFingerTracking;
+
     private void Start()
     {
         // Fix the target framerate
@@ -80,6 +83,16 @@ public class ClientManager : MonoBehaviour
         client.OnRecv += OnMsgRecv;
         client.OnError += OnError;
         client.Start(ip, port);
+
+
+        if (PlayerPrefs.HasKey("FingerTracking")) {
+            useFingerTracking = PlayerPrefs.GetInt("FingerTracking") != 0;
+        } else {
+            PlayerPrefs.SetInt("FingerTracking", 0);
+            useFingerTracking = false;
+        }
+        fingerIKs.SetActive(useFingerTracking);
+        
     }
 
     private void OnApplicationQuit()

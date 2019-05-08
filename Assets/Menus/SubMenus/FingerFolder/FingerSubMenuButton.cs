@@ -54,9 +54,11 @@ public class FingerSubMenuButton : MonoBehaviour {
                 if (isFingerActive)
                 {
                     isFingerActive = false;
+                    PlayerPrefs.SetInt("FingerTracking", 0);
                 }else if (!isFingerActive)
                 {
                     isFingerActive = true;
+                    PlayerPrefs.SetInt("FingerTracking", 1);
                 }
                 else
                 {
