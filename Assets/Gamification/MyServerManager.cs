@@ -211,7 +211,7 @@ public class MyServerManager : MonoBehaviour
     public void SendEndgameToClient(string winner, int winnerPunctuation, int loserPunctuation)
     {
         //int difference = winnerPunctuation - loserPunctuation;
-        string endGameText = winner + "," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+        string endGameText = winner + "," + winnerPunctuation.ToString() + "." + loserPunctuation.ToString();
         Packet packet = PacketBuilder.Build(Packet.PacketType.Endgame, endGameText);
         foreach (var client in connectionManager.Connections)
         {

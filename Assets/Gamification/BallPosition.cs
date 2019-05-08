@@ -75,13 +75,7 @@ public class BallPosition : MonoBehaviour {
 
         preBallPos = ballPos;                   //Actualización de la pelota para el proximo frame
 
-        if(puntuationP1 >= maxPuntuation)
-        {
-            myServerManager.SendEndgameToClient(winnerP1, puntuationP1, puntuationP2);
-        }else if(puntuationP2 >= maxPuntuation)
-        {
-            myServerManager.SendEndgameToClient(winnerP2, puntuationP2, puntuationP1);
-        }
+        
 
     }
 
@@ -205,6 +199,16 @@ public class BallPosition : MonoBehaviour {
     private void ResetBall()
     {
         myServerManager.SendPunctuationToClient(puntuationP1, puntuationP2);
+
+        if (puntuationP1 >= maxPuntuation)
+        {
+            myServerManager.SendEndgameToClient(winnerP1, puntuationP1, puntuationP2);
+        }
+        else if (puntuationP2 >= maxPuntuation)
+        {
+            myServerManager.SendEndgameToClient(winnerP2, puntuationP2, puntuationP1);
+        }
+
 
         DirectionBallChanged();
         ballController.serve = true;

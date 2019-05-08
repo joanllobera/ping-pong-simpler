@@ -55,8 +55,8 @@ public class WinnerCanvas : MonoBehaviour {
     {
         matchEnd = true;
         text1 = winner;
-        text2 = winnerP.ToString();
-        text3 = loser.ToString();
+        text2 = winnerP.ToString("D2");
+        text3 = loser.ToString("D2");
         needToChange = true;
     }
 }
