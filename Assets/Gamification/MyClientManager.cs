@@ -116,9 +116,9 @@ public class MyClientManager : MonoBehaviour
         Packet packet = PacketBuilder.Build(Packet.PacketType.Sensors, transforms);
         client.Send(packet.ToArray(), packet.Size);
 
-        if (goToMainMenu) {
-            ReturnToMainMenu();
-        }
+        //if (goToMainMenu) {
+        //    ReturnToMainMenu();
+        //}
     }
 
     private void OnMsgRecv(object sender, Client.ClientMsgEventArgs e)
@@ -390,9 +390,11 @@ public class MyClientManager : MonoBehaviour
     }
 
 
-    IEnumerator ReturnToMainMenu()
+    public IEnumerator ReturnToMainMenu()
     {
+        Debug.Log("in Return to main menu function");
         yield return new WaitForSeconds(5);
+        Debug.Log("Changing scene");
         SceneManager.LoadScene(MainMenuSceneName, LoadSceneMode.Single);
     }
 

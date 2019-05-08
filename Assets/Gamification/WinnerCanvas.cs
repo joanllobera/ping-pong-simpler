@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class WinnerCanvas : MonoBehaviour {
@@ -17,12 +18,13 @@ public class WinnerCanvas : MonoBehaviour {
 
     private bool matchEnd;
 
+    float waitTime = 5f;
 
     public MyClientManager myClientManagerScript;
     // Use this for initialization
     void Start()
     {
-        needToChange = false;
+        needToChange = true;
         matchEnd = false;
         transform.GetChild(0).gameObject.SetActive(false);
 
@@ -38,15 +40,18 @@ public class WinnerCanvas : MonoBehaviour {
             Debug.Log("Set Active");
 
             winner.text = text1;
-                winnerPun.text = text2;
-                loser.text = text3;
-                myClientManagerScript.goToMainMenu = true;
-                needToChange = false;
+            winnerPun.text = text2;
+            loser.text = text3;
+            //myClientManagerScript.goToMainMenu = true;
             
-        }
-        else //if(!matchEnd)
-        {
-            //gameObject.SetActive(!gameObject.activeSelf);
+            waitTime -= Time.deltaTime;
+            if(waitTime <= 0 && needToChange)
+            {
+                Debug.Log("Changing scene");
+                SceneManager.LoadScene(myClientManagerScript.MainMenuSceneName, LoadSceneMode.Single);
+                needToChange = false;
+            }
+            
         }
     }
 
@@ -58,7 +63,7 @@ public class WinnerCanvas : MonoBehaviour {
         text2 = _winnerP.ToString("D2");
         text3 = _loser.ToString("D2");
         Debug.Log("String leidos");
-    
+        myClientManagerScript.ReturnToMainMenu();
         matchEnd = true;
         
 
