@@ -24,7 +24,7 @@ public class BallController : MonoBehaviour
         //Debug.Log("Gravity: " + Physics.gravity);
         //Physics.gravity = new Vector3(0, -4f, 0);
         rb = GetComponent<Rigidbody>();
-        BulletTime.Instance.OnBulletTimeStarted += TriggerBulletTime;
+        if(BulletTime.Instance != null) BulletTime.Instance.OnBulletTimeStarted += TriggerBulletTime;
     }
 
     public float forceMagnitude = 100; //800;
@@ -32,7 +32,7 @@ public class BallController : MonoBehaviour
     {
         if(paddle != null && serve)
         {
-            BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
+            if (BulletTime.Instance != null) BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             transform.rotation = Quaternion.identity;
@@ -71,7 +71,7 @@ public class BallController : MonoBehaviour
             magnitude = velocity.magnitude;
             oldPos = paddle.transform.position;
         }
-        if (BulletTime.Instance.SwitchBulletTime) {
+        if (BulletTime.Instance != null && BulletTime.Instance.SwitchBulletTime) {
             rb.AddForce((-1 * Physics.gravity) * (1 - bulletTimeMod), ForceMode.Acceleration);
         }
     }
@@ -85,11 +85,13 @@ public class BallController : MonoBehaviour
         {
             Debug.Log("Impulse " + collision.impulse);
             //deactivate bullet time if activated
-            if (BulletTime.Instance.SwitchBulletTime) {
-                serverManager.SendBulletStop();
-            }
+            if (BulletTime.Instance != null) {
+                if (BulletTime.Instance.SwitchBulletTime) {
+                    serverManager.SendBulletStop();
+                }
 
-            BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
+                BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
+            }
             Vector3 dir = collision.contacts[0].point - transform.position;
             dir = -dir.normalized;
 
@@ -130,10 +132,10 @@ public class BallController : MonoBehaviour
 
     private void ActivateBulletTime() {
         rb.velocity *= bulletTimeMod;
-        BulletTime.Instance.SwitchBulletTime = true;
+        if (BulletTime.Instance != null) BulletTime.Instance.SwitchBulletTime = true;
     }
 
     private void OnDestroy() {
-        BulletTime.Instance.OnBulletTimeStarted -= TriggerBulletTime;
+        if (BulletTime.Instance != null) BulletTime.Instance.OnBulletTimeStarted -= TriggerBulletTime;
     }
 }
