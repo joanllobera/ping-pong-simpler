@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ServerManager : MonoBehaviour
+public class MyServerManager : MonoBehaviour
 {
     public Net.Protocol protocol;
     private Server server = null;
@@ -137,18 +137,7 @@ public class ServerManager : MonoBehaviour
                 if(text == Constants.ServeRequest)
                 {
                     Debug.Log("Serving Ball");
-                    SendBulletStop();
                     ballController.serve = true;
-                }
-                else if (text == Constants.BulletTimeRequest && BulletTime.Instance != null) {
-                    Debug.Log("Bullet Time");
-                    BulletTime.Instance.TriggerBulletTime();
-
-                    //enviar un paquete bullet time notificando al cliente
-                    if (BulletTime.Instance.SwitchBulletTime) {
-                        Packet bulletPack = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
-                        server.Send(e.Client, bulletPack.ToArray(), bulletPack.Size);
-                    }
                 }
                 Debug.Log("[C(" + e.Client + ")->S]: " + text
                     + " (" + packet.Size + " of " + e.Len + " bytes)");
@@ -208,10 +197,14 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    public void SendBulletStop() {
-        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeStopRequest);
-        foreach (var client in connectionManager.Connections) {
+    public void SendPunctuationToClient(int p1, int p2)
+    {
+        string punctuation = p1.ToString("D2") + "." + p2.ToString("D2");
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Punctuation, punctuation);
+        foreach (var client in connectionManager.Connections)
+        {
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
         }
+        
     }
 }
