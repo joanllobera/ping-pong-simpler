@@ -5,12 +5,15 @@
 using AvatarSystem;
 using SharpConfig;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
+
+using UnityEngine.SceneManagement;
 
 public class MyClientManager : MonoBehaviour
 {
@@ -45,6 +48,9 @@ public class MyClientManager : MonoBehaviour
 
     public ScorePanel scorePanel;
     public WinnerCanvas winnerPanel;
+
+    public bool goToMainMenu;
+    public string MainMenuSceneName;
 
     private void Start()
     {
@@ -81,6 +87,8 @@ public class MyClientManager : MonoBehaviour
         client.OnRecv += OnMsgRecv;
         client.OnError += OnError;
         client.Start(ip, port);
+
+        goToMainMenu = false;               
     }
 
     private void OnApplicationQuit()
@@ -107,6 +115,10 @@ public class MyClientManager : MonoBehaviour
         List<Trans> transforms = avatar.GetController().GetTransforms();
         Packet packet = PacketBuilder.Build(Packet.PacketType.Sensors, transforms);
         client.Send(packet.ToArray(), packet.Size);
+
+        if (goToMainMenu) {
+            ReturnToMainMenu();
+        }
     }
 
     private void OnMsgRecv(object sender, Client.ClientMsgEventArgs e)
@@ -204,15 +216,15 @@ public class MyClientManager : MonoBehaviour
 
                 string endgame = ((PacketText)packet).Data;
 
-                int winner; 
-                int puntuationWinner, puntuationLosser;
-                winner = int.Parse(endgame.Substring(14, endgame.IndexOf(",")));
-                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(", with "), endgame.IndexOf(" and a difference of ")));
-                puntuationLosser = int.Parse(endgame.Substring(endgame.IndexOf(" and a difference of ")));
+                string winner; 
+                int puntuationWinner, puntuationLoser;
+                winner = (endgame.Substring(0, endgame.IndexOf(",")));
+                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",")+1, endgame.IndexOf(".")));
+                puntuationLoser = int.Parse(endgame.Substring(endgame.IndexOf(".")+1));
 
 
 
-                winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLosser);
+                winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLoser);
                 break;
 
             case Packet.PacketType.Benchmark:
@@ -375,4 +387,15 @@ public class MyClientManager : MonoBehaviour
             client.Send(packet.ToArray(), packet.Size);
         }
     }
+
+
+    IEnumerator ReturnToMainMenu()
+    {
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene(MainMenuSceneName, LoadSceneMode.Single);
+    }
+
+
+
+
 }

@@ -14,29 +14,47 @@ public class WinnerCanvas : MonoBehaviour {
 
     private string text1, text2, text3;
     private bool needToChange;
+
+    private bool matchEnd;
+
+
+    public MyClientManager myClientManagerScript;
     // Use this for initialization
     void Start()
     {
         needToChange = false;
+        matchEnd = false;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (needToChange)
-        {
-            winner.text = text1;
-            winnerPun.text = text2;
-            loser.text = text3;
-            needToChange = false;
-        }
+        
 
+        if (matchEnd)
+        {
+            gameObject.SetActive(gameObject.activeSelf);
+
+            if (needToChange)
+            {
+                winner.text = text1;
+                winnerPun.text = text2;
+                loser.text = text3;
+                myClientManagerScript.goToMainMenu = true;
+                needToChange = false;
+            }
+        }
+        else
+        {
+            gameObject.SetActive(!gameObject.activeSelf);
+        }
     }
 
-    public void ChangePuntuation(int winner, int winnerP, int loser)
+    public void ChangePuntuation(string winner, int winnerP, int loser)
     {
-        text1 = winner.ToString();
+        matchEnd = true;
+        text1 = winner;
         text2 = winnerP.ToString();
         text3 = loser.ToString();
         needToChange = true;
