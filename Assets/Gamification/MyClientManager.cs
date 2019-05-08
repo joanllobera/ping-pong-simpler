@@ -123,7 +123,7 @@ public class MyClientManager : MonoBehaviour
 
     private void OnMsgRecv(object sender, Client.ClientMsgEventArgs e)
     {
-        Debug.Log("MSG recived");
+        //Debug.Log("MSG recived");
         if(e.Len == 0)
         {
             Debug.Log("Disconnected from the server");
@@ -135,7 +135,7 @@ public class MyClientManager : MonoBehaviour
         int dataIndex = 0;
         Packet packet = PacketBuilder.Parse(e.Buffer, ref dataIndex);
 
-        Debug.Log("Starting reading the MSG");
+        //Debug.Log("Starting reading the MSG");
         // Process the packet
         switch (packet.Type)
         {
@@ -213,17 +213,18 @@ public class MyClientManager : MonoBehaviour
                 break;
 
             case Packet.PacketType.Endgame:
-
+                
                 string endgame = ((PacketText)packet).Data;
 
-                string winner; 
+                string winner;
                 int puntuationWinner, puntuationLoser;
+                
                 winner = (endgame.Substring(0, endgame.IndexOf(",")));
-                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",")+1, endgame.IndexOf(".")));
+               
+                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",")+1, endgame.IndexOf(".")- endgame.IndexOf(",")-1));
                 puntuationLoser = int.Parse(endgame.Substring(endgame.IndexOf(".")+1));
 
-
-
+                Debug.Log("received packet, before function");
                 winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLoser);
                 break;
 

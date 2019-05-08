@@ -24,39 +24,44 @@ public class WinnerCanvas : MonoBehaviour {
     {
         needToChange = false;
         matchEnd = false;
+        transform.GetChild(0).gameObject.SetActive(false);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-
         if (matchEnd)
         {
-            gameObject.SetActive(gameObject.activeSelf);
+            Debug.Log("matchEnd = true");
+            transform.GetChild(0).gameObject.SetActive(true);
+            Debug.Log("Set Active");
 
-            if (needToChange)
-            {
-                winner.text = text1;
+            winner.text = text1;
                 winnerPun.text = text2;
                 loser.text = text3;
                 myClientManagerScript.goToMainMenu = true;
                 needToChange = false;
-            }
+            
         }
-        else
+        else //if(!matchEnd)
         {
-            gameObject.SetActive(!gameObject.activeSelf);
+            //gameObject.SetActive(!gameObject.activeSelf);
         }
     }
 
-    public void ChangePuntuation(string winner, int winnerP, int loser)
+    public void ChangePuntuation(string _winner, int _winnerP, int _loser)
     {
+        Debug.Log("Entro a cambiar");
+        
+        text1 = _winner;
+        text2 = _winnerP.ToString("D2");
+        text3 = _loser.ToString("D2");
+        Debug.Log("String leidos");
+    
         matchEnd = true;
-        text1 = winner;
-        text2 = winnerP.ToString("D2");
-        text3 = loser.ToString("D2");
-        needToChange = true;
+        
+
+
     }
 }
