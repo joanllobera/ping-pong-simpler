@@ -28,7 +28,7 @@ public class BallPosition : MonoBehaviour {
 
     //public GameObject MyServerManager;
 
-    public MyServerManager myServerManager;
+    public ServerManager ServerManager;
 
     private bool IsColliding;
     // Use this for initialization
@@ -198,15 +198,15 @@ public class BallPosition : MonoBehaviour {
 
     private void ResetBall()
     {
-        myServerManager.SendPunctuationToClient(puntuationP1, puntuationP2);
+        ServerManager.SendPunctuationToClient(puntuationP1, puntuationP2);
 
         if (puntuationP1 >= maxPuntuation)
         {
-            myServerManager.SendEndgameToClient(winnerP1, puntuationP1, puntuationP2);
+            ServerManager.SendEndgameToClient(winnerP1, puntuationP1, puntuationP2);
         }
         else if (puntuationP2 >= maxPuntuation)
         {
-            myServerManager.SendEndgameToClient(winnerP2, puntuationP2, puntuationP1);
+            ServerManager.SendEndgameToClient(winnerP2, puntuationP2, puntuationP1);
         }
 
 

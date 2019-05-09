@@ -214,4 +214,27 @@ public class ServerManager : MonoBehaviour
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
         }
     }
+
+    public void SendPunctuationToClient(int p1, int p2)
+    {
+        string punctuation = p1.ToString("D2") + "." + p2.ToString("D2");
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Punctuation, punctuation);
+        foreach (var client in connectionManager.Connections)
+        {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+
+    }
+
+    public void SendEndgameToClient(string winner, int winnerPunctuation, int loserPunctuation)
+    {
+        //int difference = winnerPunctuation - loserPunctuation;
+        string endGameText = winner + "," + winnerPunctuation.ToString() + "." + loserPunctuation.ToString();
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Endgame, endGameText);
+        foreach (var client in connectionManager.Connections)
+        {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+
+    }
 }
