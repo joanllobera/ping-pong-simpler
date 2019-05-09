@@ -1343,10 +1343,6 @@ MonoBehaviour:
   - {fileID: 891256535}
   objectsToSend:
   - {fileID: 284377188}
-  - {fileID: 1280166383}
-  - {fileID: 1146051399}
-  - {fileID: 1236823767}
-  - {fileID: 578326440}
   benchmarkEnabled: 0
 --- !u!1 &1550466416
 GameObject:

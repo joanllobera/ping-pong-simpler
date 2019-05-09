@@ -7,7 +7,7 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     public GameObject paddle;
-    private Rigidbody rb;
+    public Rigidbody rb;
     public bool serve = false;
     public float magunsConstant = 5f;
 
