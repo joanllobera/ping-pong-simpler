@@ -75,9 +75,21 @@ public static class PacketBuilder
                 string endgame = (string)data;
                 size += endgame.Length;
                 break;
+            case Packet.PacketType.Win:
+                string win = (string)data;
+                size += win.Length;
+                break;
+            case Packet.PacketType.Lose:
+                string lose = (string)data;
+                size += lose.Length;
+                break;
 
             case Packet.PacketType.Benchmark:
                 size += NetBenchmarks.Size;
+                break;
+            case Packet.PacketType.Nickname:
+                string nick = (string)data;
+                size += nick.Length;
                 break;
 
             default:
@@ -134,11 +146,23 @@ public static class PacketBuilder
                 string endgameText = (string)data;
                 content.AddRange(Encoding.ASCII.GetBytes(endgameText));
                 break;
+            case Packet.PacketType.Win:
+                string winText = (string)data;
+                content.AddRange(Encoding.ASCII.GetBytes(winText));
+                break;
+            case Packet.PacketType.Lose:
+                string loseText = (string)data;
+                content.AddRange(Encoding.ASCII.GetBytes(loseText));
+                break;
 
             case Packet.PacketType.Benchmark:
                 NetBenchmarks benchmarks = (NetBenchmarks)data;
                 content.AddRange(BitConverter.GetBytes(benchmarks.sendTimeStamp));
                 content.AddRange(BitConverter.GetBytes(benchmarks.recvTimeStamp));
+                break;
+            case Packet.PacketType.Nickname:
+                string nick = (string)data;
+                content.AddRange(Encoding.ASCII.GetBytes(nick));
                 break;
 
             default:
