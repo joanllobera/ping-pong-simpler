@@ -7,7 +7,7 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     public GameObject paddle;
-    private Rigidbody rb;
+    public Rigidbody rb;
     public bool serve = false;
     public float magunsConstant = 5f;
 
@@ -34,6 +34,7 @@ public class BallController : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
             transform.rotation = Quaternion.identity;
             Vector3 paddlePos = paddle.transform.position;
+            rb.isKinematic = false;
             //Debug.DrawLine(paddlePos, paddlePos + paddle.transform.forward * 0.2f, Color.red, 10);
             //Debug.DrawLine(paddlePos + paddle.transform.forward * 0.2f,
             //    paddlePos + paddle.transform.forward * 0.2f + paddle.transform.up * 0.5f,
