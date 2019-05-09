@@ -7,7 +7,7 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     public GameObject paddle;
-    private Rigidbody rb;
+    public Rigidbody rb;
     public bool serve = false;
     private bool activateBulletTimeBall = false;
     private float bulletTimeMod = 0.0f;
@@ -32,6 +32,7 @@ public class BallController : MonoBehaviour
     {
         if(paddle != null && serve)
         {
+            rb.isKinematic = false;
             if (BulletTime.Instance != null) BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -83,7 +84,7 @@ public class BallController : MonoBehaviour
         //Debug.Log("Collision with " + collision.gameObject.name);
         if(collision.gameObject.name == Constants.RightHand)
         {
-            Debug.Log("Impulse " + collision.impulse);
+            //Debug.Log("Impulse " + collision.impulse);
             //deactivate bullet time if activated
             if (BulletTime.Instance != null) {
                 if (BulletTime.Instance.SwitchBulletTime) {
@@ -98,7 +99,7 @@ public class BallController : MonoBehaviour
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.AddForce(dir * collisionForce);
-            Debug.Log(dir * collisionForce);
+            //Debug.Log(dir * collisionForce);
             Debug.DrawLine(transform.position, collision.contacts[0].point * 100, Color.black, 10);
         }
 

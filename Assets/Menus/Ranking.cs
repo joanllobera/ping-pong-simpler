@@ -26,7 +26,7 @@ public static class Ranking {
     //}
     
     public static void AddPlayerScore(string name, int score)
-    {
+    {/*
         string content = name + ":" + score.ToString("D2") + "\n";
         //create file if it doesn't exist
         if (!File.Exists(path))
@@ -37,7 +37,7 @@ public static class Ranking {
         {
             //Add the text to the file
             File.AppendAllText(path, content);
-        }
+        }*/
     }
 
     private static void ClampLogs(int max = 10)
