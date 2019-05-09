@@ -215,7 +215,7 @@ public class ClientManager : MonoBehaviour
                 //send to server his nickname
                 Packet packetNick = PacketBuilder.Build(Packet.PacketType.Nickname, Name.nickname);
                 client.Send(packetNick.ToArray(), packetNick.Size);
-
+                Debug.Log("sent nick to server after receiving the win msg");
                 string win = ((PacketText)packet).Data;
 
                 string resWin;
@@ -230,7 +230,7 @@ public class ClientManager : MonoBehaviour
                 winnerPanel.ChangePuntuation(resWin, puntuationP1Win, puntuationP2Win);
                 break;
             case Packet.PacketType.Lose:
-                Debug.Log("Client received Win mesg");
+                Debug.Log("Client received Lose mesg");
                 string lose = ((PacketText)packet).Data;
 
                 string resLose;

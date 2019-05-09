@@ -35,9 +35,9 @@ public class WinnerCanvas : MonoBehaviour {
     {
         if (matchEnd)
         {
-            Debug.Log("matchEnd = true");
+            //Debug.Log("matchEnd = true");
             transform.GetChild(0).gameObject.SetActive(true);
-            Debug.Log("Set Active");
+            //Debug.Log("Set Active");
 
             winner.text = text1;
             winnerPun.text = text2;
@@ -57,12 +57,12 @@ public class WinnerCanvas : MonoBehaviour {
 
     public void ChangePuntuation(string _winner, int _winnerP, int _loser)
     {
-        Debug.Log("Entro a cambiar");
+        //Debug.Log("Entro a cambiar");
         
         text1 = _winner;
         text2 = _winnerP.ToString("D2");
         text3 = _loser.ToString("D2");
-        Debug.Log("String leidos");
+        //Debug.Log("String leidos");
         ClientManagerScript.ReturnToMainMenu();
         matchEnd = true;
         
