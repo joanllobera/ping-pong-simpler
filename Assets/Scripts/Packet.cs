@@ -23,7 +23,8 @@ public class Packet
         Spawn,          // [S->C]
         OtherClients,   // [S->C]
         Objects,        // [S->C]
-        Punctuation,     // [S->C]
+        Punctuation,    // [S->C]
+        Endgame,        // [S->C]
 
         Benchmark,
     };
