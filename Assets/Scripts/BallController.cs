@@ -67,7 +67,7 @@ public class BallController : MonoBehaviour
 
         }
 
-        Vector3 magnusForce = /*magunsConstant*/ this.GetComponent<Rigidbody>().mass * Vector3.Cross(rb.velocity, rb.angularVelocity);
+        Vector3 magnusForce = magunsConstant * this.GetComponent<Rigidbody>().mass * Vector3.Cross(velocity, new Vector3(magnitude, magnitude, magnitude));
         rb.AddRelativeForce(magnusForce);
 
         //if (Input.GetKeyDown(KeyCode.Space))
