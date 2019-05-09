@@ -125,12 +125,16 @@ public class PingPongAgent : Agent {
     {
         this.rBody.velocity = Vector3.zero;
         this.rBody.angularVelocity = Vector3.zero;
-        rBody.position = initialPos + new Vector3(Random.Range(-0.5f,0.5f),0,0);
-
-        if (clientManager.client != null)
+        if (clientManager != null)
         {
-            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
-            clientManager.client.Send(packet.ToArray(), packet.Size);
+            if (clientManager.client != null)
+            {
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+                clientManager.client.Send(packet.ToArray(), packet.Size);
+            }
+        } else
+        {
+            rBody.position = initialPos + new Vector3(Random.Range(-0.5f, 0.5f), 0, 0);
         }
     }
 }
