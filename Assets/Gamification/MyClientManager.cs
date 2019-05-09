@@ -5,12 +5,15 @@
 using AvatarSystem;
 using SharpConfig;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
+
+using UnityEngine.SceneManagement;
 
 public class MyClientManager : MonoBehaviour
 {
@@ -44,6 +47,10 @@ public class MyClientManager : MonoBehaviour
 
 
     public ScorePanel scorePanel;
+    public WinnerCanvas winnerPanel;
+
+    public bool goToMainMenu;
+    public string MainMenuSceneName;
 
     private void Start()
     {
@@ -80,6 +87,8 @@ public class MyClientManager : MonoBehaviour
         client.OnRecv += OnMsgRecv;
         client.OnError += OnError;
         client.Start(ip, port);
+
+        goToMainMenu = false;               
     }
 
     private void OnApplicationQuit()
@@ -110,7 +119,7 @@ public class MyClientManager : MonoBehaviour
 
     private void OnMsgRecv(object sender, Client.ClientMsgEventArgs e)
     {
-        Debug.Log("MSG recived");
+        //Debug.Log("MSG recived");
         if(e.Len == 0)
         {
             Debug.Log("Disconnected from the server");
@@ -122,7 +131,7 @@ public class MyClientManager : MonoBehaviour
         int dataIndex = 0;
         Packet packet = PacketBuilder.Parse(e.Buffer, ref dataIndex);
 
-        Debug.Log("Starting reading the MSG");
+        //Debug.Log("Starting reading the MSG");
         // Process the packet
         switch (packet.Type)
         {
@@ -197,6 +206,22 @@ public class MyClientManager : MonoBehaviour
                 //    receivedNewText = true;
                 //    Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
                 //}
+                break;
+
+            case Packet.PacketType.Endgame:
+                
+                string endgame = ((PacketText)packet).Data;
+
+                string winner;
+                int puntuationWinner, puntuationLoser;
+                
+                winner = (endgame.Substring(0, endgame.IndexOf(",")));
+               
+                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",")+1, endgame.IndexOf(".")- endgame.IndexOf(",")-1));
+                puntuationLoser = int.Parse(endgame.Substring(endgame.IndexOf(".")+1));
+
+                Debug.Log("received packet, before function");
+                winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLoser);
                 break;
 
             case Packet.PacketType.Benchmark:
@@ -359,4 +384,17 @@ public class MyClientManager : MonoBehaviour
             client.Send(packet.ToArray(), packet.Size);
         }
     }
+
+
+    public IEnumerator ReturnToMainMenu()
+    {
+        Debug.Log("in Return to main menu function");
+        yield return new WaitForSeconds(5);
+        Debug.Log("Changing scene");
+        SceneManager.LoadScene(MainMenuSceneName, LoadSceneMode.Single);
+    }
+
+
+
+
 }

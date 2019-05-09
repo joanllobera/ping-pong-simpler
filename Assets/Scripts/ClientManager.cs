@@ -5,12 +5,15 @@
 using AvatarSystem;
 using SharpConfig;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
+
+using UnityEngine.SceneManagement;
 
 public class ClientManager : MonoBehaviour
 {
@@ -41,6 +44,13 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Input_Sources hand;
     public SteamVR_Action_Boolean triggerPress;
     public SteamVR_Action_Boolean gripPress;    //put as gripPinch
+
+
+    public ScorePanel scorePanel;               //Canvas where the current score is displayed
+    public WinnerCanvas winnerPanel;            //Canvas where the final score is displayed
+
+    public bool goToMainMenu;                   //Is the match is over, the game needs to go to the main menu
+    public string MainMenuSceneName;            //Name of the main menu scene
 
     private void Start()
     {
@@ -77,6 +87,8 @@ public class ClientManager : MonoBehaviour
         client.OnRecv += OnMsgRecv;
         client.OnError += OnError;
         client.Start(ip, port);
+
+        goToMainMenu = false;
     }
 
     private void OnApplicationQuit()
@@ -172,11 +184,31 @@ public class ClientManager : MonoBehaviour
                 break;
 
             case Packet.PacketType.Punctuation:
-                List<Trans> PuntuationRecv = ((PacketObjects)packet).Data;
-                foreach (var o in PuntuationRecv)
-                {
-                    
-                }
+
+                string punctuation = ((PacketText)packet).Data;
+
+                int pPlayer1, pPlayer2;
+                pPlayer1 = int.Parse(punctuation.Substring(0, punctuation.IndexOf(".")));
+                pPlayer2 = int.Parse(punctuation.Substring(punctuation.IndexOf(".") + 1));
+
+                scorePanel.ChangePuntuation(pPlayer1, pPlayer2);
+   
+                break;
+
+            case Packet.PacketType.Endgame:
+
+                string endgame = ((PacketText)packet).Data;
+
+                string winner;
+                int puntuationWinner, puntuationLoser;
+
+                winner = (endgame.Substring(0, endgame.IndexOf(",")));
+
+                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",") + 1, endgame.IndexOf(".") - endgame.IndexOf(",") - 1));
+                puntuationLoser = int.Parse(endgame.Substring(endgame.IndexOf(".") + 1));
+
+                //Debug.Log("received packet, before function");
+                winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLoser);
                 break;
 
             case Packet.PacketType.Benchmark:
@@ -338,5 +370,13 @@ public class ClientManager : MonoBehaviour
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, text);
             client.Send(packet.ToArray(), packet.Size);
         }
+    }
+
+    public IEnumerator ReturnToMainMenu()
+    {
+        Debug.Log("in Return to main menu function");
+        yield return new WaitForSeconds(5);
+        Debug.Log("Changing scene");
+        SceneManager.LoadScene(MainMenuSceneName, LoadSceneMode.Single);
     }
 }

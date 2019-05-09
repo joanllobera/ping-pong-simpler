@@ -661,6 +661,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 983700036}
+  clientManager: {fileID: 0}
 --- !u!4 &83198336
 Transform:
   m_ObjectHideFlags: 0
@@ -1372,15 +1373,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.603
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.583
+      value: 0.828
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.043
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1443,7 +1444,8 @@ Prefab:
       propertyPath: m_Constraints
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114261650670226820, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &292421119
@@ -2039,6 +2041,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 618741735}
+  clientManager: {fileID: 0}
 --- !u!1 &417186978
 GameObject:
   m_ObjectHideFlags: 0
@@ -2553,6 +2556,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 1162253142}
+  clientManager: {fileID: 0}
 --- !u!1 &740702538
 GameObject:
   m_ObjectHideFlags: 0
@@ -2680,6 +2684,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 1162253142}
+  clientManager: {fileID: 0}
 --- !u!1 &815352976
 GameObject:
   m_ObjectHideFlags: 0
@@ -2807,6 +2812,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 247342066}
+  clientManager: {fileID: 0}
 --- !u!1 &936191478
 GameObject:
   m_ObjectHideFlags: 0
@@ -3514,6 +3520,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 618741735}
+  clientManager: {fileID: 0}
 --- !u!4 &1221544708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4218522148924568, guid: 590b794c4547fff4ebd203b4e7f43921,
@@ -5488,6 +5495,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 214320337}
+  clientManager: {fileID: 0}
 --- !u!1 &1825491731
 GameObject:
   m_ObjectHideFlags: 0
@@ -5615,6 +5623,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 292421120}
+  clientManager: {fileID: 0}
 --- !u!1 &1830483886
 GameObject:
   m_ObjectHideFlags: 0
@@ -5827,6 +5836,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 292421120}
+  clientManager: {fileID: 0}
 --- !u!1 &1905761775
 GameObject:
   m_ObjectHideFlags: 0
@@ -5954,6 +5964,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 247342066}
+  clientManager: {fileID: 0}
 --- !u!1 &1917316703
 GameObject:
   m_ObjectHideFlags: 0
@@ -6153,6 +6164,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 983700036}
+  clientManager: {fileID: 0}
 --- !u!4 &1923000904
 Transform:
   m_ObjectHideFlags: 0
@@ -6563,6 +6575,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 214320337}
+  clientManager: {fileID: 0}
 --- !u!1 &2035362630
 GameObject:
   m_ObjectHideFlags: 0
@@ -6733,3 +6746,22 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2109002837}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2121027020 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1993229892698220, guid: 590b794c4547fff4ebd203b4e7f43921,
+    type: 2}
+  m_PrefabInternal: {fileID: 59475140}
+--- !u!64 &2121027024
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2121027020}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300006, guid: 0d2ed163860809d48ab2e72792d683e8, type: 3}

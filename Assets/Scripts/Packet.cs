@@ -25,6 +25,7 @@ public class Packet
         OtherClients,   // [S->C]
         Objects,        // [S->C]
         Punctuation,    // [S->C]
+        Endgame,        // [S->C]
 
         Benchmark,
     };
