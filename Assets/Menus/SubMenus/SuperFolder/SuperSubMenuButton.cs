@@ -54,9 +54,11 @@ public class SuperSubMenuButton : MonoBehaviour {
                 if (isSuperActive)
                 {
                     isSuperActive = false;
+                    PlayerPrefs.SetInt("BulletTime", 0);
                 }else if (!isSuperActive)
                 {
                     isSuperActive = true;
+                    PlayerPrefs.SetInt("BulletTime", 1);
                 }
                 else
                 {

@@ -48,6 +48,8 @@ public class ClientManager : MonoBehaviour
     public GameObject fingerIKs;
     private bool useFingerTracking;
 
+    private bool useBulletTime;
+
     private void Start()
     {
         // Fix the target framerate
@@ -90,6 +92,13 @@ public class ClientManager : MonoBehaviour
         } else {
             PlayerPrefs.SetInt("FingerTracking", 0);
             useFingerTracking = false;
+        }
+
+        if (PlayerPrefs.HasKey("BulletTime")) {
+            useBulletTime = PlayerPrefs.GetInt("BulletTime") != 0;
+        } else {
+            PlayerPrefs.SetInt("BulletTime", 1);
+            useBulletTime = true;
         }
         fingerIKs.SetActive(useFingerTracking);
         
@@ -250,8 +259,10 @@ public class ClientManager : MonoBehaviour
             client.Send(packet.ToArray(), packet.Size);
         }
         else if (gripPress.GetStateDown(hand)) {
-            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
-            client.Send(packet.ToArray(), packet.Size);
+            if (useBulletTime) {
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                client.Send(packet.ToArray(), packet.Size);
+            }
         }
     }
 
@@ -365,8 +376,10 @@ public class ClientManager : MonoBehaviour
             OnGestureChanged(FingerIKs.GesturesTypes.OK);
         } else if (state == 2) {
             OnGestureChanged(FingerIKs.GesturesTypes.Five);
-            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
-            client.Send(packet.ToArray(), packet.Size);
+            if (useBulletTime) {
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                client.Send(packet.ToArray(), packet.Size);
+            }
         }
         else if (state == 0)
         {
