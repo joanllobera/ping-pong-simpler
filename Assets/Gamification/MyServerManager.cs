@@ -207,4 +207,16 @@ public class MyServerManager : MonoBehaviour
         }
         
     }
+
+    public void SendEndgameToClient(string winner, int winnerPunctuation, int loserPunctuation)
+    {
+        //int difference = winnerPunctuation - loserPunctuation;
+        string endGameText = winner + "," + winnerPunctuation.ToString() + "." + loserPunctuation.ToString();
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Endgame, endGameText);
+        foreach (var client in connectionManager.Connections)
+        {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+
+    }
 }
