@@ -53,11 +53,11 @@ public class WriteNameManager : MonoBehaviour {
             }else if(onButton == OnButton.Next)
             {
                 letter++;
-                if (letter == 27) letter = 0;
+                if (letter == 26) letter = 0;
             }else if(onButton == OnButton.Previous)
             {
                 letter--;
-                if (letter == -1) letter = 26;
+                if (letter == -1) letter = 25;
             }
         }
         //onButton = OnButton.Nothing;
