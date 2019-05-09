@@ -195,20 +195,54 @@ public class ClientManager : MonoBehaviour
    
                 break;
 
-            case Packet.PacketType.Endgame:
+            //case Packet.PacketType.Endgame:
 
-                string endgame = ((PacketText)packet).Data;
+            //    string endgame = ((PacketText)packet).Data;
 
-                string winner;
-                int puntuationWinner, puntuationLoser;
+            //    string winner;
+            //    int puntuationWinner, puntuationLoser;
 
-                winner = (endgame.Substring(0, endgame.IndexOf(",")));
+            //    winner = (endgame.Substring(0, endgame.IndexOf(",")));
 
-                puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",") + 1, endgame.IndexOf(".") - endgame.IndexOf(",") - 1));
-                puntuationLoser = int.Parse(endgame.Substring(endgame.IndexOf(".") + 1));
+            //    puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",") + 1, endgame.IndexOf(".") - endgame.IndexOf(",") - 1));
+            //    puntuationLoser = int.Parse(endgame.Substring(endgame.IndexOf(".") + 1));
+
+            //    //Debug.Log("received packet, before function");
+            //    winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLoser);
+            //    break;
+            case Packet.PacketType.Win:
+                Debug.Log("Client received Win mesg");
+                //send to server his nickname
+                Packet packetNick = PacketBuilder.Build(Packet.PacketType.Nickname, Name.nickname);
+                client.Send(packetNick.ToArray(), packetNick.Size);
+
+                string win = ((PacketText)packet).Data;
+
+                string resWin;
+                int puntuationP1Win, puntuationP2Win;
+
+                resWin = (win.Substring(0, win.IndexOf(",")));
+
+                puntuationP1Win = int.Parse(win.Substring(win.IndexOf(",") + 1, win.IndexOf(".") - win.IndexOf(",") - 1));
+                puntuationP2Win = int.Parse(win.Substring(win.IndexOf(".") + 1));
 
                 //Debug.Log("received packet, before function");
-                winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLoser);
+                winnerPanel.ChangePuntuation(resWin, puntuationP1Win, puntuationP2Win);
+                break;
+            case Packet.PacketType.Lose:
+                Debug.Log("Client received Win mesg");
+                string lose = ((PacketText)packet).Data;
+
+                string resLose;
+                int puntuationP1Lose, puntuationP2Lose;
+
+                resLose = (lose.Substring(0, lose.IndexOf(",")));
+
+                puntuationP1Lose = int.Parse(lose.Substring(lose.IndexOf(",") + 1, lose.IndexOf(".") - lose.IndexOf(",") - 1));
+                puntuationP2Lose = int.Parse(lose.Substring(lose.IndexOf(".") + 1));
+
+                //Debug.Log("received packet, before function");
+                winnerPanel.ChangePuntuation(resLose, puntuationP1Lose, puntuationP2Lose);
                 break;
 
             case Packet.PacketType.Benchmark:

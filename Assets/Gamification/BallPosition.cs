@@ -202,11 +202,11 @@ public class BallPosition : MonoBehaviour {
 
         if (puntuationP1 >= maxPuntuation)
         {
-            ServerManager.SendEndgameToClient(winnerP1, puntuationP1, puntuationP2);
+            ServerManager.SendEndgameToClients(winnerP1,  puntuationP1, puntuationP2);
         }
         else if (puntuationP2 >= maxPuntuation)
         {
-            ServerManager.SendEndgameToClient(winnerP2, puntuationP2, puntuationP1);
+            ServerManager.SendEndgameToClients(winnerP2, puntuationP1, puntuationP2);
         }
 
 
@@ -220,6 +220,16 @@ public class BallPosition : MonoBehaviour {
     {
         firstBot = false;
         
+    }
+
+    public int GetScoreDiference()
+    {
+        return Mathf.Max(puntuationP1, puntuationP2) - Mathf.Min(puntuationP1, puntuationP2);
+    }
+
+    public void ResetPunctuation()
+    {
+        puntuationP1 = puntuationP2 = 0;
     }
 
 }

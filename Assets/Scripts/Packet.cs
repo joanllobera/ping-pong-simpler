@@ -26,6 +26,8 @@ public class Packet
         Objects,        // [S->C]
         Punctuation,    // [S->C]
         Endgame,        // [S->C]
+        Win,            // [S->C]
+        Lose,           // [S->C]
 
         Benchmark,
     };

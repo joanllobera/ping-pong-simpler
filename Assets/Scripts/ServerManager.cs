@@ -27,6 +27,8 @@ public class ServerManager : MonoBehaviour
 
     private ConnectionManager connectionManager = new ConnectionManager(100);
 
+    BallPosition ball;
+
     private void Start()
     {
         // Fix the target framerate for standalone platforms
@@ -61,6 +63,8 @@ public class ServerManager : MonoBehaviour
         // Start the server
         server.OnRecv += OnMsgRecv;
         server.Start(Constants.PORT);
+
+        ball = GameObject.Find("Ball").GetComponent<BallPosition>();
     }
 
     private void OnApplicationQuit()
@@ -166,6 +170,18 @@ public class ServerManager : MonoBehaviour
                 connection.clientData.Update(transforms);
                 break;
 
+            case Packet.PacketType.Nickname:
+                Debug.Log("Server received nickname of the winner");
+                string nick = ((PacketText)packet).Data;
+                int score = ball.GetScoreDiference();
+                //add to ranking with punctuation
+                Ranking.AddPlayerScore(nick, score);
+                Debug.Log("nickname is: ");
+
+                //NOW WE CAN RESET SERVER
+                ball.ResetPunctuation();
+                break;
+
             case Packet.PacketType.Benchmark:
                 NetBenchmarks b = ((PacketBenchmark)packet).Data;
                 Debug.Log("RTT: " + (b.recvTimeStamp - b.sendTimeStamp) + " ms.");
@@ -226,14 +242,28 @@ public class ServerManager : MonoBehaviour
 
     }
 
-    public void SendEndgameToClient(string winner, int winnerPunctuation, int loserPunctuation)
+    public void SendEndgameToClients(string winner, int winnerPunctuation, int loserPunctuation)
     {
-        //int difference = winnerPunctuation - loserPunctuation;
-        string endGameText = winner + "," + winnerPunctuation.ToString() + "." + loserPunctuation.ToString();
-        Packet packet = PacketBuilder.Build(Packet.PacketType.Endgame, endGameText);
-        foreach (var client in connectionManager.Connections)
+        string sendText;
+        if (winner == "Player 1")
         {
-            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+            sendText = "You Win!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet1 = PacketBuilder.Build(Packet.PacketType.Win, sendText);
+            server.Send(connectionManager.Connections[0].endPoint, packet1.ToArray(), packet1.Size);
+
+            sendText = "You Lose!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet2 = PacketBuilder.Build(Packet.PacketType.Lose, sendText);
+            server.Send(connectionManager.Connections[1].endPoint, packet2.ToArray(), packet2.Size);
+        }
+        else
+        {
+            sendText = "You Win!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet3 = PacketBuilder.Build(Packet.PacketType.Win, sendText);
+            server.Send(connectionManager.Connections[1].endPoint, packet3.ToArray(), packet3.Size);
+
+            sendText = "You Lose!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet4 = PacketBuilder.Build(Packet.PacketType.Lose, sendText);
+            server.Send(connectionManager.Connections[0].endPoint, packet4.ToArray(), packet4.Size);
         }
 
     }
