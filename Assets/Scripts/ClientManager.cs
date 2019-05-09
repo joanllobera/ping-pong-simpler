@@ -101,8 +101,8 @@ public class ClientManager : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt("FingerTracking", 1);
-            useFingerTracking = true;
+            PlayerPrefs.SetInt("FingerTracking", 0);
+            useFingerTracking = false;
         }
 
         if (PlayerPrefs.HasKey("BulletTime"))
