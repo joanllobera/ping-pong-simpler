@@ -115,10 +115,6 @@ public class MyClientManager : MonoBehaviour
         List<Trans> transforms = avatar.GetController().GetTransforms();
         Packet packet = PacketBuilder.Build(Packet.PacketType.Sensors, transforms);
         client.Send(packet.ToArray(), packet.Size);
-
-        //if (goToMainMenu) {
-        //    ReturnToMainMenu();
-        //}
     }
 
     private void OnMsgRecv(object sender, Client.ClientMsgEventArgs e)
