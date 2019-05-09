@@ -208,15 +208,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.54
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.583
+      value: 0.81
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalRotation.x
@@ -661,6 +661,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 983700036}
+  clientManager: {fileID: 0}
 --- !u!4 &83198336
 Transform:
   m_ObjectHideFlags: 0
@@ -970,15 +971,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.54
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.583
+      value: 0.81
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1110,15 +1111,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.54
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.583
+      value: 0.81
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalRotation.x
@@ -1372,15 +1373,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.54
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.583
+      value: 0.81
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalRotation.x
@@ -2039,6 +2040,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 618741735}
+  clientManager: {fileID: 0}
 --- !u!1 &417186978
 GameObject:
   m_ObjectHideFlags: 0
@@ -2553,6 +2555,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 1162253142}
+  clientManager: {fileID: 0}
 --- !u!1 &740702538
 GameObject:
   m_ObjectHideFlags: 0
@@ -2680,6 +2683,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 1162253142}
+  clientManager: {fileID: 0}
 --- !u!1 &815352976
 GameObject:
   m_ObjectHideFlags: 0
@@ -2807,6 +2811,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 247342066}
+  clientManager: {fileID: 0}
 --- !u!1 &936191478
 GameObject:
   m_ObjectHideFlags: 0
@@ -3514,6 +3519,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 618741735}
+  clientManager: {fileID: 0}
 --- !u!4 &1221544708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4218522148924568, guid: 590b794c4547fff4ebd203b4e7f43921,
@@ -3528,11 +3534,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.54
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.583
+      value: 0.81
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.z
@@ -3636,15 +3642,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.54
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.583
+      value: 0.81
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4750425971928826, guid: bafbcd06b6d08d24d90049d20213ba19, type: 2}
       propertyPath: m_LocalRotation.x
@@ -5488,6 +5494,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 214320337}
+  clientManager: {fileID: 0}
 --- !u!1 &1825491731
 GameObject:
   m_ObjectHideFlags: 0
@@ -5615,6 +5622,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 292421120}
+  clientManager: {fileID: 0}
 --- !u!1 &1830483886
 GameObject:
   m_ObjectHideFlags: 0
@@ -5827,6 +5835,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 292421120}
+  clientManager: {fileID: 0}
 --- !u!1 &1905761775
 GameObject:
   m_ObjectHideFlags: 0
@@ -5954,6 +5963,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 247342066}
+  clientManager: {fileID: 0}
 --- !u!1 &1917316703
 GameObject:
   m_ObjectHideFlags: 0
@@ -6153,6 +6163,7 @@ MonoBehaviour:
   maxRotationPerSecond: 80
   arena: {fileID: 0}
   table: {fileID: 983700036}
+  clientManager: {fileID: 0}
 --- !u!4 &1923000904
 Transform:
   m_ObjectHideFlags: 0
@@ -6563,6 +6574,7 @@ MonoBehaviour:
   maxRotationPerSecond: 0
   arena: {fileID: 0}
   table: {fileID: 214320337}
+  clientManager: {fileID: 0}
 --- !u!1 &2035362630
 GameObject:
   m_ObjectHideFlags: 0
