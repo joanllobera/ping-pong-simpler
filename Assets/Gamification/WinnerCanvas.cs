@@ -20,7 +20,7 @@ public class WinnerCanvas : MonoBehaviour {
 
     float waitTime = 5f;
 
-    public MyClientManager myClientManagerScript;
+    public ClientManager ClientManagerScript;
     // Use this for initialization
     void Start()
     {
@@ -48,7 +48,7 @@ public class WinnerCanvas : MonoBehaviour {
             if(waitTime <= 0 && needToChange)
             {
                 Debug.Log("Changing scene");
-                SceneManager.LoadScene(myClientManagerScript.MainMenuSceneName, LoadSceneMode.Single);
+                SceneManager.LoadScene(ClientManagerScript.MainMenuSceneName, LoadSceneMode.Single);
                 needToChange = false;
             }
             
@@ -63,7 +63,7 @@ public class WinnerCanvas : MonoBehaviour {
         text2 = _winnerP.ToString("D2");
         text3 = _loser.ToString("D2");
         Debug.Log("String leidos");
-        myClientManagerScript.ReturnToMainMenu();
+        ClientManagerScript.ReturnToMainMenu();
         matchEnd = true;
         
 
