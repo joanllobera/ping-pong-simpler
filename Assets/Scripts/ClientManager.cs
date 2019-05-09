@@ -45,6 +45,13 @@ public class ClientManager : MonoBehaviour
     public SteamVR_Action_Boolean triggerPress;
     public SteamVR_Action_Boolean gripPress;    //put as gripPinch
 
+    public delegate void VoidDelegate(FingerIKs.GesturesTypes gesture);
+    public event VoidDelegate OnGestureChanged;
+
+    public GameObject fingerIKs;
+    private bool useFingerTracking;
+
+    private bool useBulletTime;
 
     public ScorePanel scorePanel;               //Canvas where the current score is displayed
     public WinnerCanvas winnerPanel;            //Canvas where the final score is displayed
@@ -87,6 +94,28 @@ public class ClientManager : MonoBehaviour
         client.OnRecv += OnMsgRecv;
         client.OnError += OnError;
         client.Start(ip, port);
+        
+        if (PlayerPrefs.HasKey("FingerTracking"))
+        {
+            useFingerTracking = (PlayerPrefs.GetInt("FingerTracking") != 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("FingerTracking", 1);
+            useFingerTracking = true;
+        }
+
+        if (PlayerPrefs.HasKey("BulletTime"))
+        {
+            useBulletTime = (PlayerPrefs.GetInt("BulletTime") != 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("BulletTime", 1);
+            useBulletTime = true;
+        }
+
+        fingerIKs.SetActive(useFingerTracking);
 
         goToMainMenu = false;
     }
@@ -266,8 +295,10 @@ public class ClientManager : MonoBehaviour
             client.Send(packet.ToArray(), packet.Size);
         }
         else if (gripPress.GetStateDown(hand)) {
-            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
-            client.Send(packet.ToArray(), packet.Size);
+            if (useBulletTime)  {
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                client.Send(packet.ToArray(), packet.Size);
+            }
         }
     }
 
@@ -369,6 +400,52 @@ public class ClientManager : MonoBehaviour
         {
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, text);
             client.Send(packet.ToArray(), packet.Size);
+        }
+    }
+
+    /// <summary>
+    /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
+    /// </summary>
+    public void SendBulletTimeRequestByGesture(int state)
+    {
+        Debug.Log("SERVE " + state);
+        if (state == 1)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.OK);
+        }
+        else if (state == 2)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Five);
+            if (useBulletTime) {
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                client.Send(packet.ToArray(), packet.Size);
+            }
+        }
+        else if (state == 0)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.None);
+        }
+    }
+
+    /// <summary>
+    /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
+    /// </summary>
+    public void SendServeRequestByGesture(int state)
+    {
+        Debug.Log("SERVE " + state);
+        if (state == 1)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Fist);
+        }
+        else if (state == 2)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Five);
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
+        }
+        else if (state == 0)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.None);
         }
     }
 

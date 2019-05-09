@@ -48,7 +48,7 @@ public class WinnerCanvas : MonoBehaviour {
             if(waitTime <= 0 && needToChange)
             {
                 Debug.Log("Changing scene");
-                SceneManager.LoadScene(ClientManagerScript.MainMenuSceneName, LoadSceneMode.Single);
+                //SceneManager.LoadScene(ClientManagerScript.MainMenuSceneName, LoadSceneMode.Single);
                 needToChange = false;
             }
             
