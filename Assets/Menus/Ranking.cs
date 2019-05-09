@@ -27,7 +27,7 @@ public static class Ranking {
     
     public static void AddPlayerScore(string name, int score)
     {
-        string content = name + ":" + score.ToString("D3") + "\n";
+        string content = name + ":" + score.ToString("D2") + "\n";
         //create file if it doesn't exist
         if (!File.Exists(path))
         {
