@@ -135,6 +135,7 @@ public class PingPongAgent : Agent {
         } else
         {
             rBody.position = initialPos + new Vector3(Random.Range(-0.5f, 0.5f), 0, 0);
+            ball.ResetPosition();
         }
     }
 }
