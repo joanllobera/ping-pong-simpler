@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ServerManager : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class ServerManager : MonoBehaviour
     private ConnectionManager connectionManager = new ConnectionManager(100);
 
     BallPosition ball;
+    bool readyToReset = false;
 
     private void Start()
     {
@@ -65,6 +67,7 @@ public class ServerManager : MonoBehaviour
         server.Start(Constants.PORT);
 
         ball = GameObject.Find("Ball").GetComponent<BallPosition>();
+        readyToReset = false;
     }
 
     private void OnApplicationQuit()
@@ -79,6 +82,13 @@ public class ServerManager : MonoBehaviour
         connectionManager.Tick();
 
         var clients = connectionManager.Connections;
+        if(readyToReset && clients.Count == 0){
+            Debug.Log("server reset");
+            readyToReset = false;
+            ballController.rb.isKinematic = true;
+            ball.ResetPunctuation();
+            
+        }
         foreach(var client in clients)
         {
             client.clientData.Update();
@@ -171,15 +181,17 @@ public class ServerManager : MonoBehaviour
                 break;
 
             case Packet.PacketType.Nickname:
-                Debug.Log("Server received nickname of the winner");
+                //Debug.Log("Server received nickname of the winner");
                 string nick = ((PacketText)packet).Data;
                 int score = ball.GetScoreDiference();
                 //add to ranking with punctuation
                 Ranking.AddPlayerScore(nick, score);
-                Debug.Log("nickname is: ");
+                //Debug.Log("nickname is: " + nick);
 
                 //NOW WE CAN RESET SERVER
                 ball.ResetPunctuation();
+                readyToReset = true;
+
                 break;
 
             case Packet.PacketType.Benchmark:
