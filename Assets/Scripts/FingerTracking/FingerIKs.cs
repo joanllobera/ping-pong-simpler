@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class FingerIKs : MonoBehaviour {
     public enum GesturesTypes { None, OK, Point, Fist, Five, Like }
+    
+    enum HandFlag { NoHand = 1, Unknown = 2, Point = 4, Fist = 8, OK = 16, Like = 32, Five = 64 }
+
+    private static FingerIKs _instance;
 
     [Header("Malcom's left hand fingers")]
     [SerializeField] private Transform[] _handMalcomPoints;
@@ -31,12 +35,14 @@ public class FingerIKs : MonoBehaviour {
     [Header("ClientManager's reference")]
     public ClientManager _clientManager;
     private GesturesTypes _gesture = GesturesTypes.None;
-
+    
     public Transform GetWrist { get { return _leftHand.Points[0].transform; } }
     
+    public static FingerIKs Instance { get { return _instance; } }
 
 	// Use this for initialization
 	void Awake () {
+        _instance = this;
         _handMalcomPointsRegister = new Vector3[_handMalcomPoints.Length];
         for (int i = 0; i < _handMalcomPoints.Length; ++i) {
             _handMalcomPointsRegister[i] = _handMalcomPoints[i] != null ? _handMalcomPoints[i].position : Vector3.zero;
@@ -67,7 +73,7 @@ public class FingerIKs : MonoBehaviour {
                     _handMalcomPoints[i].position = _leftHand.Points[i].transform.position;
                 } else if(_handMalcomPoints[i] != null) { _handMalcomPoints[i].position = _handMalcomPoints[i].position; }
             }*/
-            SetRotations();
+            SetRotations(Aristo.GestureProvider.LeftHand);
         }
 	}
 
@@ -93,12 +99,11 @@ public class FingerIKs : MonoBehaviour {
     {
         for (int i = 1; i < _handMalcomPoints.Length; ++i)
         {
-             _handMalcomPoints[i].rotation = _handMalcomPointsLike[i];
+             _handMalcomPoints[i].localRotation = _handMalcomPointsDefault[i];
         }
     }
 
     public void SetRotations() {
-        Debug.Log("CHANGE GESTURE " + _gesture);
         switch (_gesture)
         {
             case GesturesTypes.None:
@@ -132,6 +137,58 @@ public class FingerIKs : MonoBehaviour {
                 }
                 break;
             case GesturesTypes.Five:
+                for (int i = 1; i < _handMalcomPoints.Length; ++i)
+                {
+                    _handMalcomPoints[i].localRotation = _handMalcomPointsFive[i];
+                }
+                break;
+        }
+    }
+    HandFlag GetFlag(Aristo.GestureResult hand)
+    {
+        var flag = HandFlag.NoHand;
+        if (hand != null)
+            flag = (HandFlag)(2 << (int)hand.gesture);
+        return flag;
+    }
+
+    public void SetRotations(Aristo.GestureResult gesture)
+    {
+        Debug.Log("CHANGE GESTURE " + gesture);
+        HandFlag flag = GetFlag(gesture);
+        switch (flag)
+        {
+            case HandFlag.NoHand:
+                for (int i = 1; i < _handMalcomPoints.Length; ++i)
+                {
+                    _handMalcomPoints[i].localRotation = _handMalcomPointsDefault[i];
+                }
+                break;
+            case HandFlag.OK:
+                for (int i = 1; i < _handMalcomPoints.Length; ++i)
+                {
+                    _handMalcomPoints[i].localRotation = _handMalcomPointsOK[i];
+                }
+                break;
+            case HandFlag.Fist:
+                for (int i = 1; i < _handMalcomPoints.Length; ++i)
+                {
+                    _handMalcomPoints[i].localRotation = _handMalcomPointsFist[i];
+                }
+                break;
+            case HandFlag.Point:
+                for (int i = 1; i < _handMalcomPoints.Length; ++i)
+                {
+                    _handMalcomPoints[i].localRotation = _handMalcomPointsPoint[i];
+                }
+                break;
+            case HandFlag.Like:
+                for (int i = 1; i < _handMalcomPoints.Length; ++i)
+                {
+                    _handMalcomPoints[i].localRotation = _handMalcomPointsLike[i];
+                }
+                break;
+            case HandFlag.Five:
                 for (int i = 1; i < _handMalcomPoints.Length; ++i)
                 {
                     _handMalcomPoints[i].localRotation = _handMalcomPointsFive[i];
