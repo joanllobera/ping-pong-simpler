@@ -21,7 +21,7 @@ public class WriteNameManager : MonoBehaviour {
     string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     char[] alph = new char[26];
     public enum OnButton { Nothing, Previous, Next, Ok};
-    public OnButton onButton;
+    [HideInInspector] public OnButton onButton;
 
     // Use this for initialization
     void Start () {
@@ -35,7 +35,8 @@ public class WriteNameManager : MonoBehaviour {
 
         if (triggerPress.GetStateDown(right))
         {
-            if(onButton == OnButton.Ok)
+
+            if (onButton == OnButton.Ok)
             {
                 if (index < 2) {
                     ++index;
@@ -59,7 +60,7 @@ public class WriteNameManager : MonoBehaviour {
                 if (letter == -1) letter = 26;
             }
         }
-
+        //onButton = OnButton.Nothing;
         letters[index].text = alph[letter].ToString();
     }
 
