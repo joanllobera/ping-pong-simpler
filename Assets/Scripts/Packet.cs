@@ -18,12 +18,13 @@ public class Packet
 
         // Only Client can send:
         Sensors,        // [C->S]
+        Nickname,       // [C->S]
 
         // Only Server can send:
         Spawn,          // [S->C]
         OtherClients,   // [S->C]
         Objects,        // [S->C]
-        Punctuation,     // [S->C]
+        Punctuation,    // [S->C]
 
         Benchmark,
     };

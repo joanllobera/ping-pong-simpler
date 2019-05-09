@@ -74,6 +74,10 @@ public static class PacketBuilder
             case Packet.PacketType.Benchmark:
                 size += NetBenchmarks.Size;
                 break;
+            case Packet.PacketType.Nickname:
+                string nick = (string)data;
+                size += nick.Length;
+                break;
 
             default:
                 throw new ArgumentException("Invalid PacketType!");
@@ -129,6 +133,10 @@ public static class PacketBuilder
                 NetBenchmarks benchmarks = (NetBenchmarks)data;
                 content.AddRange(BitConverter.GetBytes(benchmarks.sendTimeStamp));
                 content.AddRange(BitConverter.GetBytes(benchmarks.recvTimeStamp));
+                break;
+            case Packet.PacketType.Nickname:
+                string nick = (string)data;
+                content.AddRange(Encoding.ASCII.GetBytes(nick));
                 break;
 
             default:
