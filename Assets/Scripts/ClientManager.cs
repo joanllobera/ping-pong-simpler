@@ -281,6 +281,11 @@ public class ClientManager : MonoBehaviour
                 client.Send(p.ToArray(), p.Size);
                 break;
 
+            case Packet.PacketType.Ranking:
+                string ranking = ((PacketText)packet).Data;
+                Name.ranking = ranking;
+                break;
+
             default:
                 Debug.Assert(false);
                 Debug.LogError("Invalid PacketType" + " (" + packet.Size + " of " + e.Len + " bytes)");

@@ -62,6 +62,33 @@ public static class Ranking {
         return readText;
     }
 
+    /// <summary>Converts an array of strings with all the ranks to a single string of variable length</summary>
+    public static string ArrayToSingleString(string[] arr) //variable length
+    {
+        string str = "";
+        for(int i = 0; i < arr.Length; i++)
+        {
+            str += arr[i] + ",";
+        }
+        
+        return str;
+    }
+
+    /// <summary> Converts the single string with all the ranks to an array of strings of variable length</summary>
+    public static string[] StringToArrayOfStrings(string str)
+    {
+        List<string> listAux = new List<string>();
+        int index = str.IndexOf(",");
+        while(index != -1)
+        {
+            listAux.Add(str.Substring(0, index));
+            str = str.Remove(0, index + 1);
+            index = str.IndexOf(",");
+        }
+        string[] arr = listAux.ToArray();
+        return arr;
+    }
+
     public static void SortRanking()
     {
         string[] readText = File.ReadAllLines(path);

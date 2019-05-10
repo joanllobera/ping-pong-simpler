@@ -91,6 +91,10 @@ public static class PacketBuilder
                 string nick = (string)data;
                 size += nick.Length;
                 break;
+            case Packet.PacketType.Ranking:
+                string ranking = (string)data;
+                size += ranking.Length;
+                break;
 
             default:
                 throw new ArgumentException("Invalid PacketType!");
@@ -163,6 +167,10 @@ public static class PacketBuilder
             case Packet.PacketType.Nickname:
                 string nick = (string)data;
                 content.AddRange(Encoding.ASCII.GetBytes(nick));
+                break;
+            case Packet.PacketType.Ranking:
+                string ranking = (string)data;
+                content.AddRange(Encoding.ASCII.GetBytes(ranking));
                 break;
 
             default:

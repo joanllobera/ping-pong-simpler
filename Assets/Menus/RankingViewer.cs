@@ -11,8 +11,11 @@ public class RankingViewer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        ResetTexts();
-        //request ranking to the server
+        if(Name.ranking != "")
+        {
+            SetRankingViewerFields(Ranking.StringToArrayOfStrings(Name.ranking));
+        }else ResetTexts();
+        //request ranking to the server? if connected
         
     }
 	

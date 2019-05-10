@@ -28,6 +28,7 @@ public class Packet
         Endgame,        // [S->C]
         Win,            // [S->C]
         Lose,           // [S->C]
+        Ranking,        // [S->C]
 
         Benchmark,
     };

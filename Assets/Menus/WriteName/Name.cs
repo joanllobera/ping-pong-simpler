@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Name {
-    public static string nickname = "FIC";
+    public static string nickname = "";
+    public static string ranking = "";
 	
 }
