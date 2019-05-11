@@ -106,6 +106,31 @@ We could connect with private server, ping it and tried to open 8888 port, but w
 
 The Magnus effect doesn't work perfectly, we couldn't test it with detail because the collision of the ball with the paddle have some lag and if you try to hit the ball so fast, the collision does not produce exactly. We have a GIF in the Test Scene where Magnus effect looks well.
 
+## Machine Learning Player
+
+The Machine Learning for Unity found [here] (https://github.com/Unity-Technologies/ml-agents) has been used to train an AI player. This artificial intelligence is able to play against itself in a level that has a wall in it.
+The agent is a ping pong paddle that is able to rotate and move in a restricted area.
+
+The brain that the agent uses performs the following observations:
+	- Position of the agent relative to the center of the table.
+	- Ball position relative to the agent.
+	- Ball bounce on the table.
+We've kept things simple and avoided to track the velocity of the ball since it is calculated in the server and not in the client part.
+
+The agent performs the following actions
+	- Move itself in the X and Y axis.
+	- Rotate iself on its local X axis.
+With those actions, the agent is able to hit the ball and return it.
+
+### Agent training
+To train this agent, just go to the ServerSceneAI and enable the "Control" toggle in the Academy object. Be sure to run the Anaconda environment to train the agent properly [set_up_training] (https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Executable.md) .
+
+The agent has been trained using the default batch file used in the ML-Agents repo. A modifyed batch file has been used (the same that trains the tennis example in the ML-Agents repo) but the brain ended up learning nothing in 500k iterations.
+The .bytes file that the brain uses has been generated with a training that lasted 2 million iterations in an environment in which the AI learned to play against itself by bouncing the ball into a wall.
+
+### Playing against the AI
+The scene ClientSceneAI replaces the avatar and the VR system with the agent. A modifyed client manager translates the agent position and other positional information and sends it to the server. This scene acts like a self driven player.
+
 ## Credits
 
 This project is a simplification of two original projects developed in Autumn 2017 and Winter 2018 by Enric Moreu and Alexandre Via 
