@@ -5,12 +5,15 @@
 using AvatarSystem;
 using SharpConfig;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
+
+using UnityEngine.SceneManagement;
 
 public class ClientManager : MonoBehaviour
 {
@@ -40,11 +43,27 @@ public class ClientManager : MonoBehaviour
 
     public SteamVR_Input_Sources hand;
     public SteamVR_Action_Boolean triggerPress;
+    public SteamVR_Action_Boolean gripPress;    //put as gripPinch
+
+    public delegate void VoidDelegate(FingerIKs.GesturesTypes gesture);
+    public event VoidDelegate OnGestureChanged;
+
+    public GameObject fingerIKs;
+    private bool useFingerTracking;
+
+    private bool useBulletTime;
+
+    public ScorePanel scorePanel;               //Canvas where the current score is displayed
+    public WinnerCanvas winnerPanel;            //Canvas where the final score is displayed
+
+    public bool goToMainMenu;                   //Is the match is over, the game needs to go to the main menu
+    public string MainMenuSceneName;            //Name of the main menu scene
 
     private void Start()
     {
         // Fix the target framerate
         Application.targetFrameRate = 90;
+        if(BulletTimeEffect.Instance != null) BulletTimeEffect.Instance.Effect = false;
 
         // Cache text labels
         recvTextField = GameObject.Find("RecvTxt").GetComponent<Text>();
@@ -75,6 +94,30 @@ public class ClientManager : MonoBehaviour
         client.OnRecv += OnMsgRecv;
         client.OnError += OnError;
         client.Start(ip, port);
+        
+        if (PlayerPrefs.HasKey("FingerTracking"))
+        {
+            useFingerTracking = (PlayerPrefs.GetInt("FingerTracking") != 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("FingerTracking", 0);
+            useFingerTracking = false;
+        }
+
+        if (PlayerPrefs.HasKey("BulletTime"))
+        {
+            useBulletTime = (PlayerPrefs.GetInt("BulletTime") != 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("BulletTime", 1);
+            useBulletTime = true;
+        }
+
+        fingerIKs.SetActive(useFingerTracking);
+
+        goToMainMenu = false;
     }
 
     private void OnApplicationQuit()
@@ -120,9 +163,18 @@ public class ClientManager : MonoBehaviour
         switch(packet.Type)
         {
             case Packet.PacketType.Text:
-                recvText = ((PacketText)packet).Data;
-                receivedNewText = true;
-                Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+
+                string text = ((PacketText)packet).Data;
+                if (text == Constants.BulletTimeRequest && BulletTimeEffect.Instance != null) {
+                    BulletTimeEffect.Instance.Effect = true;
+                } else if (text == Constants.BulletTimeStopRequest && BulletTimeEffect.Instance != null) {
+                    BulletTimeEffect.Instance.Effect = false;
+                }
+                else {
+                    recvText = ((PacketText)packet).Data;
+                    receivedNewText = true;
+                    Debug.Log("[S->C]: " + recvText + " (" + packet.Size + " of " + e.Len + " bytes)");
+                }
                 break;
 
             case Packet.PacketType.Spawn:
@@ -158,6 +210,68 @@ public class ClientManager : MonoBehaviour
                         t.Rot = o.Rot;
                     }
                 }
+                break;
+
+            case Packet.PacketType.Punctuation:
+
+                string punctuation = ((PacketText)packet).Data;
+
+                int pPlayer1, pPlayer2;
+                pPlayer1 = int.Parse(punctuation.Substring(0, punctuation.IndexOf(".")));
+                pPlayer2 = int.Parse(punctuation.Substring(punctuation.IndexOf(".") + 1));
+
+                scorePanel.ChangePuntuation(pPlayer1, pPlayer2);
+   
+                break;
+
+            //case Packet.PacketType.Endgame:
+
+            //    string endgame = ((PacketText)packet).Data;
+
+            //    string winner;
+            //    int puntuationWinner, puntuationLoser;
+
+            //    winner = (endgame.Substring(0, endgame.IndexOf(",")));
+
+            //    puntuationWinner = int.Parse(endgame.Substring(endgame.IndexOf(",") + 1, endgame.IndexOf(".") - endgame.IndexOf(",") - 1));
+            //    puntuationLoser = int.Parse(endgame.Substring(endgame.IndexOf(".") + 1));
+
+            //    //Debug.Log("received packet, before function");
+            //    winnerPanel.ChangePuntuation(winner, puntuationWinner, puntuationLoser);
+            //    break;
+            case Packet.PacketType.Win:
+                Debug.Log("Client received Win mesg");
+                //send to server his nickname
+                Packet packetNick = PacketBuilder.Build(Packet.PacketType.Nickname, Name.nickname);
+                client.Send(packetNick.ToArray(), packetNick.Size);
+                Debug.Log("sent nick to server after receiving the win msg");
+                string win = ((PacketText)packet).Data;
+
+                string resWin;
+                int puntuationP1Win, puntuationP2Win;
+
+                resWin = (win.Substring(0, win.IndexOf(",")));
+
+                puntuationP1Win = int.Parse(win.Substring(win.IndexOf(",") + 1, win.IndexOf(".") - win.IndexOf(",") - 1));
+                puntuationP2Win = int.Parse(win.Substring(win.IndexOf(".") + 1));
+
+                //Debug.Log("received packet, before function");
+                winnerPanel.ChangePuntuation(resWin, puntuationP1Win, puntuationP2Win);
+                break;
+            case Packet.PacketType.Lose:
+                Debug.Log("Client received Lose mesg");
+                string lose = ((PacketText)packet).Data;
+
+                string resLose;
+                int puntuationP1Lose, puntuationP2Lose;
+
+                resLose = (lose.Substring(0, lose.IndexOf(",")));
+
+                puntuationP1Lose = int.Parse(lose.Substring(lose.IndexOf(",") + 1, lose.IndexOf(".") - lose.IndexOf(",") - 1));
+                puntuationP2Lose = int.Parse(lose.Substring(lose.IndexOf(".") + 1));
+
+                //Debug.Log("received packet, before function");
+                winnerPanel.ChangePuntuation(resLose, puntuationP1Lose, puntuationP2Lose);
                 break;
 
             case Packet.PacketType.Benchmark:
@@ -213,6 +327,12 @@ public class ClientManager : MonoBehaviour
         {
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
             client.Send(packet.ToArray(), packet.Size);
+        }
+        else if (gripPress.GetStateDown(hand)) {
+            if (useBulletTime)  {
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                client.Send(packet.ToArray(), packet.Size);
+            }
         }
     }
 
@@ -315,5 +435,59 @@ public class ClientManager : MonoBehaviour
             Packet packet = PacketBuilder.Build(Packet.PacketType.Text, text);
             client.Send(packet.ToArray(), packet.Size);
         }
+    }
+
+    /// <summary>
+    /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
+    /// </summary>
+    public void SendBulletTimeRequestByGesture(int state)
+    {
+        Debug.Log("SERVE " + state);
+        if (state == 1)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.OK);
+        }
+        else if (state == 2)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Five);
+            if (useBulletTime) {
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                client.Send(packet.ToArray(), packet.Size);
+            }
+        }
+        else if (state == 0)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.None);
+        }
+    }
+
+    /// <summary>
+    /// If the state of the gesture is 2 (Triggered) then we trigger the effect.
+    /// </summary>
+    public void SendServeRequestByGesture(int state)
+    {
+        Debug.Log("SERVE " + state);
+        if (state == 1)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Fist);
+        }
+        else if (state == 2)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.Five);
+            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.ServeRequest);
+            client.Send(packet.ToArray(), packet.Size);
+        }
+        else if (state == 0)
+        {
+            OnGestureChanged(FingerIKs.GesturesTypes.None);
+        }
+    }
+
+    public IEnumerator ReturnToMainMenu()
+    {
+        Debug.Log("in Return to main menu function");
+        yield return new WaitForSeconds(5);
+        Debug.Log("Changing scene");
+        SceneManager.LoadScene(MainMenuSceneName, LoadSceneMode.Single);
     }
 }
