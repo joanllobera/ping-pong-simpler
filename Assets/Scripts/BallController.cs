@@ -9,6 +9,7 @@ public class BallController : MonoBehaviour
     public GameObject paddle;
     public Rigidbody rb;
     public bool serve = false;
+	public float magunsConstant = 5f;
     private bool activateBulletTimeBall = false;
     private float bulletTimeMod = 0.0f;
 
@@ -72,6 +73,9 @@ public class BallController : MonoBehaviour
             magnitude = velocity.magnitude;
             oldPos = paddle.transform.position;
         }
+		Vector3 magnusForce = magunsConstant * this.GetComponent<Rigidbody>().mass * Vector3.Cross(velocity, new Vector3(magnitude, magnitude, magnitude));
+        rb.AddRelativeForce(magnusForce);
+		
         if (BulletTime.Instance != null && BulletTime.Instance.SwitchBulletTime) {
             rb.AddForce((-1 * Physics.gravity) * (1 - bulletTimeMod), ForceMode.Acceleration);
         }
