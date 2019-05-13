@@ -64,11 +64,25 @@ The game loop of this scene now is the following:
 	Ofensive player: Player A 
 	Defensive player: Player B
 
-	- Player A throws ball that does not bounce in any field and falls out -> +1 point for Player B
-	- Player A throws ball that bounces on his own field -> +1 point for Player B
-	- Player A throws a ball that bounces in the Player B field and returns to bounce in the same field ->+1 point for Player A
+	- 
+
+Player A throws ball that does not bounce in any field and falls out -> +1 point for Player B
+
+
+	- Player A throws ball that bounces on his own field -> +1 point for Player B
+
+
+	- Player A throws a ball that bounces in the Player B field and returns to bounce in the same field ->
++1 point for Player A
+
+
 	- Player A throws ball that bounces in Player B field and falls out -> +1 point for Player A
-	- Player A throws ball that bounces in Player B field and B hits the ball -> Ofensive player is now the Player B and Defensive player is Player A
+	- 
+
+Player A throws ball that bounces in Player B field and B hits the ball -> 
+Ofensive player is now the Player B and Defensive player is Player A
+
+
 	- The first player to get 20 points wins the match 
 
 The current points of each player will be in the field. The punctuation of the right is from Player 1 and the one on the left is from Player 2.
@@ -105,6 +119,14 @@ The floating walls are working on server and collision with the ball was correct
 We could connect with private server, ping it and tried to open 8888 port, but we couldn't upload a build and execute it.
 
 The Magnus effect doesn't work perfectly, we couldn't test it with detail because the collision of the ball with the paddle have some lag and if you try to hit the ball so fast, the collision does not produce exactly. We have a GIF in the Test Scene where Magnus effect looks well.
+
+Magnus effect formula:
+
+	Vector3 magnusForce = magunsConstant * this.GetComponent<Rigidbody>().mass * Vector3.Cross(velocity, new Vector3(magnitude, 		magnitude, magnitude));
+        rb.AddRelativeForce(magnusForce);
+	
+Where magnusConstant is equal to 2.
+
 
 ## Machine Learning Player
 
