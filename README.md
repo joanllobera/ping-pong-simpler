@@ -116,6 +116,8 @@ rb.AddForce((paddlePos + paddle.transform.forward * 0.2f - transform.position).n
 
 The floating walls are working on server and collision with the ball was correct, but we couldn't achieve client synchronize with server the transforms of the walls, so we've disabled it on client and server. We have a GIF in the Test Scene where walls move floating in Y axis.
 
+![alt-text](Images/Wall.gif)
+
 We could connect with private server, ping it and tried to open 8888 port, but we couldn't upload a build and execute it.
 
 The Magnus effect doesn't work perfectly, we couldn't test it with detail because the collision of the ball with the paddle have some lag and if you try to hit the ball so fast, the collision does not produce exactly. We have a GIF in the Test Scene where Magnus effect looks well.
@@ -127,6 +129,7 @@ Magnus effect formula:
 	
 Where magnusConstant is equal to 2.
 
+![alt-text](Images/Magnus.gif)
 
 ## Machine Learning Player
 
