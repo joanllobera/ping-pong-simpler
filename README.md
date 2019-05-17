@@ -114,20 +114,20 @@ Vive's Finger tracking API gives us the ability to track our hands via the camer
 We have three options: 
 1- 2D Tracking -> The hand is at a set distance from the camera but tracks the horizontal and vertical movement of the hand.
 2- 3D Tracking -> The hand is tracked in 3D space but only the position of the wrist is given.
-3- Skeleton -> The hand is tracked in 3D space and we get 21 positions for each joint in the hand starting with th wrist.
+3- Skeleton -> The hand is tracked in 3D space and we get 21 positions for each joint in the hand starting with the wrist.
 
-For this project we used the Skeleton option since we wanted to recognize gestures and represent gestures, something the other options don't have.
+For this project we used the Skeleton option since we wanted to recognize and represent gestures, something the other options don't have.
 We have 5 gestures: Point, Opened hand (Five), Fist, OK 👌 and Like 👍.
 The left hand is the one that is being tracked, the right hand needs to be using the controller for 360 tracking of the hand to use the paddle confortably. Since we lose the ability to use left hand inputs we map those inputs to Gesture combos.
 i.e.: OK => Five serves the ball and Fist => Five triggers the BulletTime event.
 
 To do this the API gives us a script that checks for gestures and by giving it a preparation and trigger gesture we will be able to know when the user has done the preparation gesture (OK for example) and then the trigger gesture (Five for example) in the good order. 
-You can give it parameters to cahnge the number of frames the user has the stay in the same gesture to go through the different states (preparation/trigger). This results in faster or slower transitions between preparation and trigger.
+You can give it parameters to change the number of frames the user has the stay in the same gesture to go through the different states (preparation/trigger). This results in faster or slower transitions between preparation and trigger.
 i.e.: The BulletTime activation gesture combo is almost instant since it has to be triggered the moment the user wants it. The serve on the other hand does not need such a fast activation.
 
 #### Server Side
 The server gets a location that represents the left hand from the client. If the left hand is detected by the finger tracking API we send the wrist position to the server instead of the controller's position. But if the left hand isn't detected we send the controller's.
-Since the server uses IDs that he creates the first time a client connects we have to tell it to use the same ID for both left hand controller and left hand figertracking.
+Since the server uses IDs that he creates the first time a client connects we have to tell it to use the same ID for both left hand controller and left hand finger tracking.
 This implementation makes it hard to be able to swap easily between left and right hand finger tracking for left handed people so the project only supports left hand finger tracking at the moment and forces users to use right hand for the paddle.
 
 #### Gesture representation ingame
