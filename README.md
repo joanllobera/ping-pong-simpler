@@ -108,6 +108,35 @@ In order to set up fingertracking with HTC Vive Pro, you might want to follow th
 1- Due to a unity bug, if your unity version is between 2018.2.16 and 2018.3.4, you have to delete the file OPENCL.dll in the unity root folder.
 2- Enable Camera in SteamVR settings, which is set to disabled by default. To enable it back you need to click SteamVR properties -> Camera -> Enable Camera.
 
+### Implementation
+#### Tracking types and gestures
+Vive's Finger tracking API gives us the ability to track our hands via the cameras in the front of the VivePro headset. 
+We have three options: 
+1- 2D Tracking -> The hand is at a set distance from the camera but tracks the horizontal and vertical movement of the hand.
+2- 3D Tracking -> The hand is tracked in 3D space but only the position of the wrist is given.
+3- Skeleton -> The hand is tracked in 3D space and we get 21 positions for each joint in the hand starting with th wrist.
+
+For this project we used the Skeleton option since we wanted to recognize gestures and represent gestures, something the other options don't have.
+We have 5 gestures: Point, Opened hand (Five), Fist, OK 👌 and Like 👍.
+The left hand is the one that is being tracked, the right hand needs to be using the controller for 360 tracking of the hand to use the paddle confortably. Since we lose the ability to use left hand inputs we map those inputs to Gesture combos.
+i.e.: OK => Five serves the ball and Fist => Five triggers the BulletTime event.
+
+To do this the API gives us a script that checks for gestures and by giving it a preparation and trigger gesture we will be able to know when the user has done the preparation gesture (OK for example) and then the trigger gesture (Five for example) in the good order. 
+You can give it parameters to cahnge the number of frames the user has the stay in the same gesture to go through the different states (preparation/trigger). This results in faster or slower transitions between preparation and trigger.
+i.e.: The BulletTime activation gesture combo is almost instant since it has to be triggered the moment the user wants it. The serve on the other hand does not need such a fast activation.
+
+#### Server Side
+The server gets a location that represents the left hand from the client. If the left hand is detected by the finger tracking API we send the wrist position to the server instead of the controller's position. But if the left hand isn't detected we send the controller's.
+Since the server uses IDs that he creates the first time a client connects we have to tell it to use the same ID for both left hand controller and left hand figertracking.
+This implementation makes it hard to be able to swap easily between left and right hand finger tracking for left handed people so the project only supports left hand finger tracking at the moment and forces users to use right hand for the paddle.
+
+#### Gesture representation ingame
+The joints location for the hands are gameobjects in the scene that are created the first time the hand is detected. Once everything is setup, using events we communicate to the client manager that finger tracking is enabled and can start looking for the hand's gestures and send information when needed.
+
+For the ingame character, we needed a way to map those points to the hand. Since the joints are only positions and not rotations we would need to compute the rotation using the conections between joints. We tried multiple ways but didn't get a good enough result.
+
+We ended up doing a system that uses the gestures and premade setups for the different joints' rotation to set the corresponging gesture of the 5 available. That way the hand stays opened when nothing is detected but when the user does a gesture the hand adapts the same gesture's form to match it. This is faster than computing a little IK system and since the goal was for the player to see the gestures he was doing in real time it does the job well.
+
 ## Physics ball/walls & private server
 
 The physics of the ball has been updated with lower mass (0.35) and higher bouncing parameters (friction and bounciness 0.9). This values has been adjusted testing hitting the ball in the server scene. The formula for calculating the ball velocity when collides with the paddle has been modified too:  
