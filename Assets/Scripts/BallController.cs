@@ -9,12 +9,14 @@ public class BallController : MonoBehaviour
     public GameObject paddle;
     public Rigidbody rb;
     public bool serve = false;
-    public float magunsConstant = 5f;
+	public float magunsConstant = 5f;
+    private bool activateBulletTimeBall = false;
+    private float bulletTimeMod = 0.0f;
 
     private Vector3 oldPos;
     public Vector3 velocity;
-    public Vector3 myAngularVelocity;
     public float magnitude;
+    public ServerManager serverManager;
 
     private void Start()
     {
@@ -23,13 +25,16 @@ public class BallController : MonoBehaviour
         //Debug.Log("Gravity: " + Physics.gravity);
         //Physics.gravity = new Vector3(0, -4f, 0);
         rb = GetComponent<Rigidbody>();
+        if(BulletTime.Instance != null) BulletTime.Instance.OnBulletTimeStarted += TriggerBulletTime;
     }
 
     public float forceMagnitude = 100; //800;
     private void Update()
     {
-        if (paddle != null && serve)
+        if(paddle != null && serve)
         {
+            rb.isKinematic = false;
+            if (BulletTime.Instance != null) BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             transform.rotation = Quaternion.identity;
@@ -42,18 +47,21 @@ public class BallController : MonoBehaviour
             transform.position = paddlePos + paddle.transform.forward * 0.2f + paddle.transform.up * 0.3f;
             Debug.DrawLine(paddlePos + paddle.transform.forward * 0.2f, transform.position, Color.green, 10);
 
-
             rb.AddForce((paddlePos + paddle.transform.forward * 0.2f - transform.position).normalized * forceMagnitude);
 
             serve = false;
         }
 
-        if (paddle == null)
+        if (activateBulletTimeBall) {
+            ActivateBulletTime();
+            activateBulletTimeBall = false;
+        }
+
+        if(paddle == null)
         {
             paddle = GameObject.Find(Constants.RightHand);
             //paddle = GameObject.Find("Oponent");
         }
-
 
     }
 
@@ -64,21 +72,13 @@ public class BallController : MonoBehaviour
             velocity = (paddle.transform.position - oldPos) / Time.fixedDeltaTime;
             magnitude = velocity.magnitude;
             oldPos = paddle.transform.position;
-
         }
-
-        Vector3 magnusForce = magunsConstant * this.GetComponent<Rigidbody>().mass * Vector3.Cross(velocity, new Vector3(magnitude, magnitude, magnitude));
+		Vector3 magnusForce = magunsConstant * this.GetComponent<Rigidbody>().mass * Vector3.Cross(velocity, new Vector3(magnitude, magnitude, magnitude));
         rb.AddRelativeForce(magnusForce);
-
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    //Uncoment upper comments and add this code
-        //    myAngularVelocity = new Vector3(10.5f, 10.5f, 0);
-        //    velocity = new Vector3(10.5f, 10.5f, 10.5f);
-
-        //    Vector3 magnusForce = /*magunsConstant*/ this.GetComponent<Rigidbody>().mass *  Vector3.Cross(velocity, myAngularVelocity);
-        //    rb.AddRelativeForce(magnusForce);
-        //}
+		
+        if (BulletTime.Instance != null && BulletTime.Instance.SwitchBulletTime) {
+            rb.AddForce((-1 * Physics.gravity) * (1 - bulletTimeMod), ForceMode.Acceleration);
+        }
     }
 
     public float speedMultiplier = 5;
@@ -88,15 +88,22 @@ public class BallController : MonoBehaviour
         //Debug.Log("Collision with " + collision.gameObject.name);
         if(collision.gameObject.name == Constants.RightHand)
         {
-            Debug.Log("Impulse " + collision.impulse);
+            //Debug.Log("Impulse " + collision.impulse);
+            //deactivate bullet time if activated
+            if (BulletTime.Instance != null) {
+                if (BulletTime.Instance.SwitchBulletTime) {
+                    serverManager.SendBulletStop();
+                }
 
+                BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
+            }
             Vector3 dir = collision.contacts[0].point - transform.position;
             dir = -dir.normalized;
 
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.AddForce(dir * collisionForce);
-            Debug.Log(dir * collisionForce);
+            //Debug.Log(dir * collisionForce);
             Debug.DrawLine(transform.position, collision.contacts[0].point * 100, Color.black, 10);
         }
 
@@ -121,5 +128,19 @@ public class BallController : MonoBehaviour
 
         //    Debug.Log(paddleSpeed.velocity.magnitude);
         //}
+    }
+
+    private void TriggerBulletTime(float p_mod) {
+        activateBulletTimeBall = true;
+        bulletTimeMod = p_mod;
+    }
+
+    private void ActivateBulletTime() {
+        rb.velocity *= bulletTimeMod;
+        if (BulletTime.Instance != null) BulletTime.Instance.SwitchBulletTime = true;
+    }
+
+    private void OnDestroy() {
+        if (BulletTime.Instance != null) BulletTime.Instance.OnBulletTimeStarted -= TriggerBulletTime;
     }
 }
