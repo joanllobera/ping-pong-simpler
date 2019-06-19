@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class Constants
 {
-    public static string IP = "10.40.0.67";
+    public static string IP = "10.40.0.118";
     public static int PORT = 33333;
 
     public static int BUFF_SIZE = 8192;
@@ -18,11 +18,14 @@ public static class Constants
     public static string Eye = "Eye";
     public static string LeftHand = "LH";
     public static string RightHand = "RH";
+    public static string LeftFingerTrackingHand = "LHFT";
     public static string Hip = "Hip";
     public static string LeftFoot = "LF";
     public static string RightFoot = "RF";
 
     public static string ServeRequest = "ServeRequest";
+    public static string BulletTimeRequest = "BulletTime";
+    public static string BulletTimeStopRequest = "BulletTimeStop";
     public static string WelcomeMsg = "Welcome";
 
     public static string OnlineText = "Online";

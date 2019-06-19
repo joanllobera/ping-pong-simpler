@@ -39,7 +39,17 @@ In order to set up fingertracking with HTC Vive Pro, you might want to follow th
 1- Due to a unity bug, if your unity version is between 2018.2.16 and 2018.3.4, you have to delete the file OPENCL.dll in the unity root folder.
 2- Enable Camera in SteamVR settings, which is set to disabled by default. To enable it back you need to click SteamVR properties -> Camera -> Enable Camera.
 
+## Physics ball/walls & private server
 
+The physics of the ball has been updated with lower mass (0.35) and higher bouncing parameters (friction and bounciness 0.9). This values has been adjusted testing hitting the ball in the server scene. The formula for calculating the ball velocity when collides with the paddle has been modified too:  
+
+rb.AddForce((paddlePos + paddle.transform.forward * 0.2f - transform.position).normalized * forceMagnitude);
+
+The floating walls are working on server and collision with the ball was correct, but we couldn't achieve client synchronize with server the transforms of the walls, so we've disabled it on client and server. We have a GIF in the Test Scene where walls move floating in Y axis.
+
+We could connect with private server, ping it and tried to open 8888 port, but we couldn't upload a build and execute it.
+
+The Magnus effect doesn't work perfectly, we couldn't test it with detail because the collision of the ball with the paddle have some lag and if you try to hit the ball so fast, the collision does not produce exactly. We have a GIF in the Test Scene where Magnus effect looks well.
 
 ## Credits
 

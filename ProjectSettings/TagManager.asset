@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Table
+  - Ball
+  - Ground
+  - HalfTable
   layers:
   - Default
   - TransparentFX
@@ -13,6 +17,8 @@ TagManager:
   - UI
   - 
   - 
+  - AgentWalls
+  - Player
   - 
   - 
   - 
@@ -21,9 +27,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - PostProcessing
   - 
   - 
   - 

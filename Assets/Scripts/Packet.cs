@@ -18,11 +18,16 @@ public class Packet
 
         // Only Client can send:
         Sensors,        // [C->S]
+        Nickname,       // [C->S]
 
         // Only Server can send:
         Spawn,          // [S->C]
         OtherClients,   // [S->C]
         Objects,        // [S->C]
+        Punctuation,    // [S->C]
+        Endgame,        // [S->C]
+        Win,            // [S->C]
+        Lose,           // [S->C]
 
         Benchmark,
     };
@@ -93,7 +98,7 @@ public class PacketText
         get
         {
             return Encoding.ASCII.GetString(p.ToArray(), Constants.HEADER_SIZE, 
-                p.Size - Constants.HEADER_SIZE);
+            p.Size - Constants.HEADER_SIZE);
         }
     }
 }

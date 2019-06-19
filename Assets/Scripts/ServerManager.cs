@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ServerManager : MonoBehaviour
 {
@@ -26,6 +27,9 @@ public class ServerManager : MonoBehaviour
     public bool benchmarkEnabled = false;
 
     private ConnectionManager connectionManager = new ConnectionManager(100);
+
+    BallPosition ball;
+    bool readyToReset = false;
 
     private void Start()
     {
@@ -61,6 +65,9 @@ public class ServerManager : MonoBehaviour
         // Start the server
         server.OnRecv += OnMsgRecv;
         server.Start(Constants.PORT);
+
+        ball = GameObject.Find("Ball").GetComponent<BallPosition>();
+        readyToReset = false;
     }
 
     private void OnApplicationQuit()
@@ -75,6 +82,13 @@ public class ServerManager : MonoBehaviour
         connectionManager.Tick();
 
         var clients = connectionManager.Connections;
+        if(readyToReset && clients.Count == 0){
+            Debug.Log("server reset");
+            readyToReset = false;
+            ballController.rb.isKinematic = true;
+            ball.ResetPunctuation();
+            
+        }
         foreach(var client in clients)
         {
             client.clientData.Update();
@@ -136,10 +150,21 @@ public class ServerManager : MonoBehaviour
                 string text = ((PacketText)packet).Data;
                 if(text == Constants.ServeRequest)
                 {
-                    Debug.Log("Serving Ball");                    
+                    Debug.Log("Serving Ball");
+                    SendBulletStop();
                     ballController.serve = true;
                     Debug.Log("SendPaddleUpStop");
                     SendPaddleUpStop();
+                }
+                else if (text == Constants.BulletTimeRequest && BulletTime.Instance != null) {
+                    Debug.Log("Bullet Time");
+                    BulletTime.Instance.TriggerBulletTime();
+
+                    //enviar un paquete bullet time notificando al cliente
+                    if (BulletTime.Instance.SwitchBulletTime) {
+                        Packet bulletPack = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeRequest);
+                        server.Send(e.Client, bulletPack.ToArray(), bulletPack.Size);
+                    }
                 }
                 else if(text == Constants.PaddleUpRequest) //Paddle Up Request
                 {
@@ -166,6 +191,20 @@ public class ServerManager : MonoBehaviour
             case Packet.PacketType.Sensors:
                 List<Trans> transforms = ((PacketSensors)packet).Data;
                 connection.clientData.Update(transforms);
+                break;
+
+            case Packet.PacketType.Nickname:
+                //Debug.Log("Server received nickname of the winner");
+                string nick = ((PacketText)packet).Data;
+                int score = ball.GetScoreDiference();
+                //add to ranking with punctuation
+                Ranking.AddPlayerScore(nick, score);
+                //Debug.Log("nickname is: " + nick);
+
+                //NOW WE CAN RESET SERVER
+                ball.ResetPunctuation();
+                readyToReset = true;
+
                 break;
 
             case Packet.PacketType.Benchmark:
@@ -216,5 +255,49 @@ public class ServerManager : MonoBehaviour
         {
             server.Send(client.endPoint, packet.ToArray(), packet.Size);
         }
+    }
+
+    public void SendBulletStop() {
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.BulletTimeStopRequest);
+        foreach (var client in connectionManager.Connections) {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+    }
+
+    public void SendPunctuationToClient(int p1, int p2)
+    {
+        string punctuation = p1.ToString("D2") + "." + p2.ToString("D2");
+        Packet packet = PacketBuilder.Build(Packet.PacketType.Punctuation, punctuation);
+        foreach (var client in connectionManager.Connections)
+        {
+            server.Send(client.endPoint, packet.ToArray(), packet.Size);
+        }
+
+    }
+
+    public void SendEndgameToClients(string winner, int winnerPunctuation, int loserPunctuation)
+    {
+        string sendText;
+        if (winner == "Player 1")
+        {
+            sendText = "You Win!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet1 = PacketBuilder.Build(Packet.PacketType.Win, sendText);
+            server.Send(connectionManager.Connections[0].endPoint, packet1.ToArray(), packet1.Size);
+
+            sendText = "You Lose!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet2 = PacketBuilder.Build(Packet.PacketType.Lose, sendText);
+            server.Send(connectionManager.Connections[1].endPoint, packet2.ToArray(), packet2.Size);
+        }
+        else
+        {
+            sendText = "You Win!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet3 = PacketBuilder.Build(Packet.PacketType.Win, sendText);
+            server.Send(connectionManager.Connections[1].endPoint, packet3.ToArray(), packet3.Size);
+
+            sendText = "You Lose!," + winnerPunctuation.ToString("D2") + "." + loserPunctuation.ToString("D2");
+            Packet packet4 = PacketBuilder.Build(Packet.PacketType.Lose, sendText);
+            server.Send(connectionManager.Connections[0].endPoint, packet4.ToArray(), packet4.Size);
+        }
+
     }
 }
