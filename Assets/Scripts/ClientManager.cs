@@ -52,6 +52,7 @@ public class ClientManager : MonoBehaviour
     private bool useFingerTracking;
 
     private bool useBulletTime;
+    private bool usePaddleUp;
 
     public ScorePanel scorePanel;               //Canvas where the current score is displayed
     public WinnerCanvas winnerPanel;            //Canvas where the final score is displayed
@@ -70,6 +71,10 @@ public class ClientManager : MonoBehaviour
         // Cache text labels
         recvTextField = GameObject.Find("RecvTxt").GetComponent<Text>();
         onlineTxt = GameObject.Find("OnlineTxt").GetComponent<Text>();
+
+        if (paddle == null) {
+            paddle = GameObject.Find(Constants.RightHand); // Que susede
+        }
 
         // Get ip, port and protocol from config file
         try
@@ -115,6 +120,16 @@ public class ClientManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("BulletTime", 1);
             useBulletTime = true;
+        }
+
+        if (PlayerPrefs.HasKey("PaddleUp"))
+        {
+            usePaddleUp = (PlayerPrefs.GetInt("PaddleUp") != 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("PaddleUp", 1);
+            usePaddleUp = true;
         }
 
         fingerIKs.SetActive(useFingerTracking);
@@ -177,13 +192,13 @@ public class ClientManager : MonoBehaviour
                 {
                     Debug.Log("PaddleUp On");
                     // Hacer que la pala sea mas grande en el Cliente.
-                    paddle.transform.localScale *= 2.0f;
+                    paddle.transform.localScale *= 3.0f;
                 }
                 else if (text == Constants.PaddleUpStopRequest)
                 {
                     Debug.Log("PaddleUp Off");
                     // Hacer que la pala sea mas pequeña en el Cliente.
-                    paddle.transform.localScale /= 2.0f;
+                    paddle.transform.localScale /= 3.0f;
                 }
                 else {
                     recvText = ((PacketText)packet).Data;
@@ -351,9 +366,11 @@ public class ClientManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.P)) // Send the PaddleUp Request
         {
-            Debug.Log("PaddleUp Request Send");
-            Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpRequest);
-            client.Send(packet.ToArray(), packet.Size);
+            if (usePaddleUp) {
+                Debug.Log("PaddleUp Request Send");
+                Packet packet = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpRequest);
+                client.Send(packet.ToArray(), packet.Size);
+            }
         }
     }
 

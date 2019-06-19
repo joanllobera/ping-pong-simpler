@@ -28,7 +28,7 @@ public class BallController : MonoBehaviour
         //Physics.gravity = new Vector3(0, -4f, 0);
         rb = GetComponent<Rigidbody>();
         if(BulletTime.Instance != null) BulletTime.Instance.OnBulletTimeStarted += TriggerBulletTime;
-        PaddleUp.Instance.OnPaddleUpStarted += TriggerPaddleUp;
+        if(PaddleUp.Instance != null) PaddleUp.Instance.OnPaddleUpStarted += TriggerPaddleUp;
         
     }
 
@@ -39,6 +39,7 @@ public class BallController : MonoBehaviour
         {
             rb.isKinematic = false;
             if (BulletTime.Instance != null) BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
+            if (PaddleUp.Instance != null) PaddleUp.Instance.SwitchPaddleUp = false;//PaddleUp is ready to be activated.
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             transform.rotation = Quaternion.identity;
@@ -106,6 +107,14 @@ public class BallController : MonoBehaviour
 
                 BulletTime.Instance.SwitchBulletTime = false; //BulletTime is ready to be activated.
             }
+            if (PaddleUp.Instance != null) {
+                if (PaddleUp.Instance.SwitchPaddleUp)
+                {
+                    serverManager.SendPaddleUpStop();
+                }
+
+                PaddleUp.Instance.SwitchPaddleUp = false; //PaddleUp is ready to be activated.
+            }
             Vector3 dir = collision.contacts[0].point - transform.position;
             dir = -dir.normalized;
 
@@ -159,14 +168,14 @@ public class BallController : MonoBehaviour
     private void ActivatePaddleUp()
     {
         paddle.transform.localScale *= paddleUpMod;
-        PaddleUp.Instance.SwitchPaddleUp = true;
+        if (PaddleUp.Instance != null) PaddleUp.Instance.SwitchPaddleUp = true;
     }
 
     private void OnDestroy()
     {
          if (BulletTime.Instance != null) BulletTime.Instance.OnBulletTimeStarted -= TriggerBulletTime;
-        
-        PaddleUp.Instance.OnPaddleUpStarted -= TriggerPaddleUp;
+
+        if (PaddleUp.Instance != null) PaddleUp.Instance.OnPaddleUpStarted -= TriggerPaddleUp;
         serverManager.SendPaddleUpStop();
     }
 

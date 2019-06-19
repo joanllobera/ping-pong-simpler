@@ -166,15 +166,15 @@ public class ServerManager : MonoBehaviour
                         server.Send(e.Client, bulletPack.ToArray(), bulletPack.Size);
                     }
                 }
-                else if(text == Constants.PaddleUpRequest) //Paddle Up Request
+                else if(text == Constants.PaddleUpRequest && PaddleUp.Instance != null) //Paddle Up Request
                 {
                     Debug.Log("Paddle Up Super Power");
                     PaddleUp.Instance.TriggerPaddleUp();
 
                     if (PaddleUp.Instance.SwitchPaddleUp)  //Send Packet to Client
                     {
-                        Packet bulletPack = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpRequest);
-                        server.Send(e.Client, bulletPack.ToArray(), bulletPack.Size);
+                        Packet paddlePack = PacketBuilder.Build(Packet.PacketType.Text, Constants.PaddleUpRequest);
+                        server.Send(e.Client, paddlePack.ToArray(), paddlePack.Size);
                     }
                 }
                 Debug.Log("[C(" + e.Client + ")->S]: " + text

@@ -10,7 +10,7 @@ public class PaddleUp : MonoBehaviour
 
     public static PaddleUp _instance;
 
-    [SerializeField] private float _size = 2.0f;
+    [SerializeField] private float _size = 3.0f;
     private bool _paddleUpActivated = false;
 
     private void Awake()
