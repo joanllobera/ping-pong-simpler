@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.pingpongsimpler.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\alumno\\Documents\\PingPongSimpler\\actions.json",
+      "action_manifest_path": "C:\\Users\\alumno\\Desktop\\ping-pong-simpler\\actions.json",
       "strings": {
         "en_us": {
           "name": "PingPongSimpler [Testing]"
